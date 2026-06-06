@@ -1,7 +1,6 @@
 package tuti.desi.entidades;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,11 +32,10 @@ import jakarta.persistence.Table;
 	    @Column(columnDefinition = "TEXT", nullable = false)
 	    private String descripcion;
 	    
-	    @Enumerated(EnumType.STRING)
-	    @Column(nullable = false)
-	    
-	    private EstadoPublicacion estado; 
-	    @Column(nullable = false)
+	 
+	    @Enumerated(EnumType.STRING) // <-- Le dice a MySQL que guarde el texto "ACTIVA", "PAUSADA", etc.
+	    @Column(name = "estado", nullable = false) // <-- Asegura que la columna no quede vacía
+	    private EstadoPublicacion estado;
 	    
 	    private boolean eliminada; 
 	    @ManyToOne

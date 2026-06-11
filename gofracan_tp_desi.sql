@@ -1,6 +1,5 @@
-DROP DATABASE IF EXISTS gofracan_tp_desi;
-CREATE DATABASE gofracan_tp_desi;
-USE gofracan_tp_desi;
+CREATE DATABASE IF NOT EXISTS gofracan;
+USE gofracan;
 
 --  tabla  PROVINCIA
 

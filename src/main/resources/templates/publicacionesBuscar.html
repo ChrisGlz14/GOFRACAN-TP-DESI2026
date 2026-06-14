@@ -1,1 +1,26 @@
-<h1>👋 ¡Hola Gabi! Estás en la pantalla de BUSCAR PUBLICACIONES</h1>
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/publicaciones/nueva}" class="btn-nuevo">➕ Nueva Publicación</a>
+</div>
+
+<table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th>ID</th>
+            <th>Propiedad</th>
+            <th>Precio Mensual</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="pub : ${publicaciones}">
+            <td th:text="${pub.id}">1</td>
+            <td th:text="${pub.propiedad.direccion}">San Martín 1234</td>
+            <td th:text="${pub.precioMensual}">$150.000</td>
+            <td th:text="${pub.estado}">ACTIVA</td>
+            <td>
+                <a th:href="@{/publicaciones/editar/{id}(id=${pub.id})}" class="btn-editar">✏️ Editar</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

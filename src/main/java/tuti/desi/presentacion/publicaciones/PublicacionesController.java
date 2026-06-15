@@ -1,15 +1,19 @@
 package tuti.desi.presentacion.publicaciones;
 
 import java.util.List;
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import tuti.desi.entidades.Publicacion;
+import tuti.desi.entidades.EstadoPublicacion;
+import tuti.desi.servicios.PropiedadService;
 import tuti.desi.servicios.PublicacionService;
 
 @Controller
@@ -19,73 +23,126 @@ public class PublicacionesController {
     @Autowired
     private PublicacionService publicacionService;
 
-    // 1. Pantalla principal de BUSCAR / LISTAR
+    @Autowired
+    private PropiedadService propiedadService; 
+
+    // 1. Pantalla principal de BUSCAR / LISTAR (HU 2.4 con Filtros Sincronizados)
     @GetMapping
-    public String listarPublicaciones(Model model) {
-        List<Publicacion> lista = publicacionService.obtenerTodas();
+    public String listarPublicaciones(
+            @RequestParam(value = "propiedadId", required = false) Long propiedadId,
+            @RequestParam(value = "estado", required = false) EstadoPublicacion estado,
+            @RequestParam(value = "precioMin", required = false) Double precioMin,
+            @RequestParam(value = "precioMax", required = false) Double precioMax,
+            Model model) {
+        
+        List<Publicacion> lista = publicacionService.buscarConFiltros(propiedadId, estado, precioMin, precioMax);
         model.addAttribute("publicaciones", lista);
+        
+        // Combos para los filtros de la pantalla principal
+        model.addAttribute("propiedades", propiedadService.obtenerDisponibles());
+        model.addAttribute("estados", EstadoPublicacion.values()); 
+        
         return "publicacionesBuscar"; 
     }
 
-    // 2. Pantalla de NUEVA PUBLICACIÓN (Con las propiedades de prueba)
+    // 2. Pantalla de NUEVA PUBLICACIÓN
     @GetMapping("/nueva")
     public String mostrarFormularioNueva(Model model) {
         model.addAttribute("publicacion", new Publicacion()); 
         
-        java.util.ArrayList<tuti.desi.entidades.Propiedad> listaFicticia = new java.util.ArrayList<>();
-        
-        tuti.desi.entidades.Propiedad p1 = new tuti.desi.entidades.Propiedad();
-        p1.setId(1L);
-        p1.setDireccion("Boulevar Gálvez 1500");
-        listaFicticia.add(p1);
-        
-        tuti.desi.entidades.Propiedad p2 = new tuti.desi.entidades.Propiedad();
-        p2.setId(2L);
-        p2.setDireccion("General López 2800");
-        listaFicticia.add(p2);
-        
-        model.addAttribute("propiedadesDisponibles", listaFicticia); 
-        
+        // Cargamos las propiedades reales de Cristian para el combo
+        model.addAttribute("propiedadesDisponibles", propiedadService.obtenerDisponibles()); 
         return "publicacionEditar"; 
     }
 
-    // 3. Pantalla de EDITAR (Por ahora vacía como la tenían antes)
+    // 3. Pantalla de EDITAR
     @GetMapping("/editar")
     public String mostrarFormularioEditar(Model model) {
         model.addAttribute("publicacion", new Publicacion()); 
+        model.addAttribute("propiedadesDisponibles", propiedadService.obtenerDisponibles());
         return "publicacionEditar"; 
     }
 
-    // 4. Procesar el botón GUARDAR PUBLICACIÓN
+    // 4. Procesar el botón GUARDAR PUBLICACIÓN (Blindado con BigDecimal para la cátedra)
     @PostMapping("/guardar")
     public String guardarPublicacion(
-            @RequestParam("propiedad") Long propiedadId,
-            @RequestParam("precioMensual") java.math.BigDecimal precioMensual,
-            @RequestParam("condiciones") String condiciones,
-            @RequestParam("descripcion") String descripcion) {
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "precioMensual", required = false) Double precioMensual, 
+            @RequestParam(value = "condiciones", required = false) String condiciones,     
+            @RequestParam(value = "descripcion", required = false) String descripcion,     
+            @RequestParam(value = "estado", required = false) String estadoForm,
+            @RequestParam(value = "propiedadIdForm", required = false) Long propiedadIdForm, 
+            Model model) {
         
-        // 1. Creamos el cascarón de la Propiedad con el ID que viene desde la web
-        tuti.desi.entidades.Propiedad propiedadAux = new tuti.desi.entidades.Propiedad();
-        propiedadAux.setId(propiedadId);
+        // Salvavidas por si viaja vacío
+        if (propiedadIdForm == null) {
+            propiedadIdForm = 1L;
+        }
+
+        Publicacion publicacion = new Publicacion();
+        if (id != null) {
+            publicacion.setId(id);
+        }
+        
+        // CÁTEDRA: Convertimos el Double del formulario a BigDecimal para la entidad
+        if (precioMensual != null) {
+            publicacion.setPrecioMensual(BigDecimal.valueOf(precioMensual));
+        } else {
+            publicacion.setPrecioMensual(BigDecimal.ZERO);
+        }
+        
+        publicacion.setCondiciones(condiciones != null ? condiciones : "");
+        publicacion.setDescripcion(descripcion != null ? descripcion : "");
+        publicacion.setEliminada(false);
+        publicacion.setFechaPublicacion(java.time.LocalDate.now());
+        
+        // Mapeo del Estado
+        if (estadoForm != null && !estadoForm.isEmpty()) {
+            publicacion.setEstado(EstadoPublicacion.valueOf(estadoForm));
+        } else {
+            publicacion.setEstado(EstadoPublicacion.ACTIVA);
+        }
+
+        // Buscamos la Propiedad real en la base de datos gofracan
+        tuti.desi.entidades.Propiedad propReal = propiedadService.buscarPorId(propiedadIdForm);
+        if (propReal == null) {
+            propReal = new tuti.desi.entidades.Propiedad();
+            propReal.setId(propiedadIdForm);
+        }
+        publicacion.setPropiedad(propReal);
+
+        // Regla de Negocio
+        if (EstadoPublicacion.ACTIVA.equals(publicacion.getEstado())) {
+            boolean yaExisteActiva = publicacionService.existePublicacionActivaParaPropiedad(propiedadIdForm);
             
-        // 2. Creamos tu Publicación y le cargamos los datos reales del formulario
-        Publicacion nuevaPublicacion = new Publicacion();
-        nuevaPublicacion.setPrecioMensual(precioMensual);
-        nuevaPublicacion.setCondiciones(condiciones); // Cargamos condiciones
-        nuevaPublicacion.setDescripcion(descripcion);
-        nuevaPublicacion.setFechaPublicacion(java.time.LocalDate.now()); 
-        nuevaPublicacion.setEliminada(false);
+            if (yaExisteActiva && (id == null)) { 
+                model.addAttribute("error", "Ya existe una publicación ACTIVA para esta propiedad. Debe pausarla o finalizarla primero.");
+                model.addAttribute("propiedadesDisponibles", propiedadService.obtenerDisponibles()); 
+                model.addAttribute("publicacion", publicacion); 
+                return "publicacionEditar"; 
+            }
+        }
+
+        // Guardado final en la base de datos
+        publicacionService.guardar(publicacion);
         
-        // 3. Le pasamos el ENUM correcto de tu paquete entidades
-        nuevaPublicacion.setEstado(tuti.desi.entidades.EstadoPublicacion.ACTIVA); 
+        return "redirect:/publicaciones"; 
+    }
+
+    // 5. Procesar la ELIMINACIÓN LÓGICA (HU 2.2)
+    @GetMapping("/eliminar/{id}")
+    public String eliminarPublicacion(@PathVariable("id") Long id, Model model) {
+        Publicacion publicacion = publicacionService.buscarPorId(id);
         
-        // 4. Vinculamos la propiedad auxiliar a la publicación
-        nuevaPublicacion.setPropiedad(propiedadAux);
+        if (publicacion != null) {
+            if (publicacion.getEstado() != EstadoPublicacion.ACTIVA) {
+                model.addAttribute("error", "No se puede eliminar la publicación. Solo se permiten eliminar publicaciones en estado ACTIVA.");
+                model.addAttribute("publicaciones", publicacionService.obtenerTodas());
+                return "publicacionesBuscar"; 
+            }
+            publicacionService.eliminarLogicamente(id);
+        }
         
-        // 5. Guardamos en la base de datos a través de tu servicio
-        publicacionService.guardar(nuevaPublicacion); 
-        
-        // 6. Redirigimos a la tabla principal
         return "redirect:/publicaciones"; 
     }
 }

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Facturas</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div class="starter-template">
+    <h1>GOFRACAN</h1>
+    <h2>Gestión de Facturas</h2>
+</div>
+
+<!-- Mensaje de error global (ej: al intentar eliminar una PAGADA) -->
+<p th:if="${errorGlobal}" th:text="${errorGlobal}" class="error"></p>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Formulario de búsqueda
+     ═══════════════════════════════════════════════════════════ -->
+<form th:action="@{/facturasBuscar}" th:object="${formBean}" method="post">
+
+    <table border="1">
+        <tr>
+            <td><label>Concepto</label></td>
+            <td><input type="text" th:field="*{concepto}"/></td>
+        </tr>
+        <tr>
+            <td><label>Estado</label></td>
+            <td>
+                <select th:field="*{estado}">
+                    <option value="">Todos</option>
+                    <option th:each="e : ${allEstados}" th:value="${e}" th:text="${e}"></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Inquilino</label></td>
+            <td>
+                <select th:field="*{idPersona}">
+                    <option value="">Todos</option>
+                    <option th:each="p : ${allPersonas}"
+                            th:value="${p.id}"
+                            th:text="${p.apellido + ', ' + p.nombre}"></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Vencimiento desde</label></td>
+            <td><input type="date" th:field="*{fechaDesde}"/></td>
+        </tr>
+        <tr>
+            <td><label>Vencimiento hasta</label></td>
+            <td><input type="date" th:field="*{fechaHasta}"/></td>
+        </tr>
+    </table>
+
+    <table class="botones">
+        <tr>
+            <td><input type="submit" name="action" value="Buscar"/></td>
+            <td><input type="submit" name="action" value="Registrar"/></td>
+            <td><input type="submit" name="action" value="Cancelar"/></td>
+        </tr>
+    </table>
+</form>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Tabla de resultados (FUERA del form de búsqueda)
+     BUG FIX: Si los botones de acción estaban dentro del form
+     de búsqueda, al hacer submit no enviaban action="Buscar"
+     y el controller no sabía qué hacer, resultando en recarga.
+     ═══════════════════════════════════════════════════════════ -->
+<div th:if="${resultados != null}">
+    <h3>Resultados (<span th:text="${#lists.size(resultados)}"></span>)</h3>
+    <table class="resultados" border="0">
+        <thead>
+            <tr>
+                <th>Concepto</th>
+                <th>Inquilino</th>
+                <th>Emisión</th>
+                <th>Vencimiento</th>
+                <th>Importe</th>
+                <th>Estado</th>
+                <th>Fecha Pago</th>
+                <th>Medio Pago</th>
+                <th>Importe Pagado</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="f : ${resultados}">
+                <td th:text="${f.concepto}"></td>
+                <td th:text="${f.persona != null ? f.persona.apellido + ', ' + f.persona.nombre : '—'}"></td>
+                <td th:text="${f.fechaEmision}"></td>
+                <td th:text="${f.fechaVencimiento}"></td>
+                <td th:text="${'$ ' + f.importe}"></td>
+                <td th:text="${f.estado}"></td>
+                <td th:text="${f.fechaPago != null ? f.fechaPago : '—'}"></td>
+                <td th:text="${f.medioPago != null ? f.medioPago : '—'}"></td>
+                <td th:text="${f.importePagado != null ? '$ ' + f.importePagado : '—'}"></td>
+
+                <!-- Editar -->
+                <td>
+                    <a th:href="@{/facturasEditar/{id}(id=${f.id})}" class="btn btn-primary">editar</a>
+                </td>
+
+                <!-- Cambiar estado (solo para PENDIENTE y VENCIDA) -->
+                <td>
+                    <span th:if="${f.estado.name() == 'PENDIENTE' or f.estado.name() == 'VENCIDA'}">
+                        <form th:action="@{/facturasEditar/estado/{id}(id=${f.id})}" method="post" style="display:inline">
+                            <select name="nuevoEstado">
+                                <option th:each="e : ${allEstados}"
+                                        th:value="${e}"
+                                        th:text="${e}"
+                                        th:selected="${e == f.estado}"></option>
+                            </select>
+                            <button type="submit">cambiar</button>
+                        </form>
+                    </span>
+                </td>
+
+                <!-- Eliminar (baja lógica) -->
+                <td>
+                    <form th:action="@{/facturasEditar/delete/{id}(id=${f.id})}" method="post" style="display:inline">
+                        <button type="submit"
+                                class="btn btn-primary"
+                                th:disabled="${f.estado.name() == 'PAGADA'}"
+                                onclick="return confirm('¿Eliminar esta factura?');">
+                            eliminar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(resultados)}">
+                <td colspan="12">No se encontraron facturas.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

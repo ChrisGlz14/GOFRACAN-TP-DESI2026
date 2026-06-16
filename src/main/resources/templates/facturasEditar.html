@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Factura</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<div class="starter-template">
+    <h1>GOFRACAN</h1>
+    <h2 th:text="${formBean.id} ? 'Editar Factura' : 'Nueva Factura'"></h2>
+</div>
+
+<!-- Errores globales -->
+<p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"></p>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Formulario principal: alta / edición de datos básicos
+     ═══════════════════════════════════════════════════════════ -->
+<form th:action="@{/facturasEditar}" th:object="${formBean}" method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <!--
+        BUG FIX: NO usamos th:field="*{estado}" aquí.
+        Cuando es una factura nueva, estado == null. Si usáramos th:field, Thymeleaf
+        generaría value="" y Spring intentaría convertir el string vacío al enum
+        EstadoFactura, lanzando una ConversionFailedException ANTES de llegar al
+        servicio (que es quien asigna PENDIENTE). Resultado: HTTP 500.
+        Solución: solo enviamos el campo si ya tiene valor (factura existente).
+    -->
+    <input type="hidden" th:if="${formBean.estado != null}"
+           name="estado" th:value="${formBean.estado}"/>
+
+    <!-- Aviso cuando la factura no puede modificarse -->
+    <div th:if="${formBean.estado != null and
+                 (formBean.estado.name() == 'PAGADA' or formBean.estado.name() == 'ANULADA')}"
+         class="error">
+        Esta factura está en estado <strong th:text="${formBean.estado}"></strong> y no puede modificarse.
+    </div>
+
+    <table border="0">
+        <tr>
+            <td><label>Estado actual</label></td>
+            <td>
+                <!-- BUG FIX: null-safe. En alta formBean.estado es null hasta que el servicio
+                     asigna PENDIENTE, así que mostramos el valor o el texto por defecto. -->
+                <strong th:text="${formBean.estado != null ? formBean.estado : 'PENDIENTE (nueva)'}"></strong>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Concepto *</label></td>
+            <td><input type="text" th:field="*{concepto}" maxlength="200"/></td>
+            <td><p th:if="${#fields.hasErrors('concepto')}" th:errors="*{concepto}" class="error"></p></td>
+        </tr>
+        <tr>
+            <td><label>Inquilino</label></td>
+            <td>
+                <select th:field="*{idPersona}">
+                    <option value="">-- Sin asignar --</option>
+                    <option th:each="p : ${allPersonas}"
+                            th:value="${p.id}"
+                            th:text="${p.apellido + ', ' + p.nombre + ' (' + p.dniCuit + ')'}"></option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label>Fecha de emisión *</label></td>
+            <td><input type="date" th:field="*{fechaEmision}"/></td>
+            <td><p th:if="${#fields.hasErrors('fechaEmision')}" th:errors="*{fechaEmision}" class="error"></p></td>
+        </tr>
+        <tr>
+            <td><label>Fecha de vencimiento *</label></td>
+            <td><input type="date" th:field="*{fechaVencimiento}"/></td>
+            <td><p th:if="${#fields.hasErrors('fechaVencimiento')}" th:errors="*{fechaVencimiento}" class="error"></p></td>
+        </tr>
+        <tr>
+            <td><label>Importe *</label></td>
+            <td><input type="number" step="0.01" min="0.01" th:field="*{importe}"/></td>
+            <td><p th:if="${#fields.hasErrors('importe')}" th:errors="*{importe}" class="error"></p></td>
+        </tr>
+    </table>
+
+    <table class="botones">
+        <tr>
+            <td>
+                <input type="submit" name="action" value="Aceptar"
+                       th:disabled="${formBean.estado != null and
+                                     (formBean.estado.name() == 'PAGADA' or
+                                      formBean.estado.name() == 'ANULADA')}"/>
+            </td>
+            <td><input type="submit" name="action" value="Cancelar"/></td>
+        </tr>
+    </table>
+</form>
+
+<!-- ═══════════════════════════════════════════════════════════
+     Sección de pago: solo visible para facturas PENDIENTE/VENCIDA
+     BUG FIX: null-safe — antes explotaba con NullPointerException
+     cuando formBean.estado era null en una factura nueva.
+     ═══════════════════════════════════════════════════════════ -->
+<div th:if="${formBean.id != null and formBean.estado != null and
+             (formBean.estado.name() == 'PENDIENTE' or formBean.estado.name() == 'VENCIDA')}">
+
+    <hr/>
+    <h3>Registrar Pago</h3>
+
+    <form th:action="@{/facturasEditar/pagar/{id}(id=${formBean.id})}"
+          th:object="${formBean}" method="post">
+
+        <table border="0">
+            <tr>
+                <td><label>Fecha de pago *</label></td>
+                <td><input type="date" th:field="*{fechaPago}"/></td>
+                <td><p th:if="${#fields.hasErrors('fechaPago')}" th:errors="*{fechaPago}" class="error"></p></td>
+            </tr>
+            <tr>
+                <td><label>Medio de pago *</label></td>
+                <td>
+                    <select th:field="*{medioPago}">
+                        <option value="">-- Seleccionar --</option>
+                        <option th:each="m : ${allMediosPago}" th:value="${m}" th:text="${m}"></option>
+                    </select>
+                </td>
+                <td><p th:if="${#fields.hasErrors('medioPago')}" th:errors="*{medioPago}" class="error"></p></td>
+            </tr>
+            <tr>
+                <td><label>Importe pagado *</label></td>
+                <td><input type="number" step="0.01" min="0.01" th:field="*{importePagado}"/></td>
+                <td><p th:if="${#fields.hasErrors('importePagado')}" th:errors="*{importePagado}" class="error"></p></td>
+            </tr>
+        </table>
+
+        <table class="botones">
+            <tr>
+                <td><input type="submit" value="Confirmar Pago"/></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<!-- Datos de pago (solo lectura cuando ya está PAGADA) -->
+<div th:if="${formBean.id != null and formBean.estado != null and formBean.estado.name() == 'PAGADA'}">
+    <hr/>
+    <h3>Datos del pago registrado</h3>
+    <table border="0">
+        <tr><td>Fecha de pago</td><td th:text="${formBean.fechaPago}"></td></tr>
+        <tr><td>Medio de pago</td><td th:text="${formBean.medioPago}"></td></tr>
+        <tr><td>Importe pagado</td><td th:text="${'$ ' + formBean.importePagado}"></td></tr>
+        <tr th:if="${formBean.interes != null}">
+            <td>Interés</td><td th:text="${'$ ' + formBean.interes}"></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

@@ -336,3 +336,32 @@ CREATE TABLE historial_estado_incidente (
         FOREIGN KEY (incidente_id)
         REFERENCES incidente(id)
 );
+
+-- ─────────────────────────────────────────────────────────────
+-- Datos de prueba
+-- ─────────────────────────────────────────────────────────────
+
+INSERT INTO provincia (nombre) VALUES 
+('Buenos Aires'),
+('Córdoba'),
+('Santa Fe'),
+('Mendoza');
+
+INSERT INTO ciudad (nombre, provincia_id) VALUES 
+('La Plata', 1),
+('Mar del Plata', 1),
+('Córdoba Capital', 2),
+('Villa Carlos Paz', 2),
+('Rosario', 3),
+('Santa Fe Capital', 3),
+('Mendoza Capital', 4);
+
+INSERT INTO persona (nombre, apellido, dni_cuit, telefono, email, domicilio, ciudad_id) VALUES 
+('Juan', 'Pérez', '20345678901', '221-4567890', 'juan.perez@email.com', 'Calle 50 N° 123', 1),
+('María', 'González', '27456789012', '223-5678901', 'maria.gonzalez@email.com', 'Av. Colón 456', 1),
+('Carlos', 'Rodríguez', '20567890123', '351-6789012', 'carlos.rodriguez@email.com', 'San Martín 789', 3),
+('Ana', 'Martínez', '27678901234', '351-7890123', 'ana.martinez@email.com', 'Belgrano 321', 3),
+('Luis', 'Fernández', '20789012345', '341-8901234', 'luis.fernandez@email.com', 'Mitre 654', 5),
+('Laura', 'López', '27890123456', '342-9012345', 'laura.lopez@email.com', 'Rivadavia 987', 6),
+('Pedro', 'Sánchez', '20901234567', '261-1234567', 'pedro.sanchez@email.com', 'San Martín 147', 7),
+('Sofía', 'Ramírez', '27012345678', '261-2345678', 'sofia.ramirez@email.com', 'Las Heras 258', 7);

@@ -156,7 +156,7 @@ CREATE TABLE contrato (
 
     fecha_inicio DATE NOT NULL,
     duracion_meses INT NOT NULL,
-    importe_mensual DECIMAL(15,2) NOT NULL,
+    importe_mensual DECIMAL(10,2) NOT NULL,
     dia_vencimiento_mensual INT NOT NULL,
 
     descripcion TEXT,

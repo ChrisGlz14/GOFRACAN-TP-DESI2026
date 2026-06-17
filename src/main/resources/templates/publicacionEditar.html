@@ -1,3 +1,4 @@
+HTML
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -8,7 +9,10 @@
 
     <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         
-        <h2 style="color: #333; margin-bottom: 20px;">📝 Registrar Publicación de Alquiler</h2>
+        <h2 style="color: #333; margin-bottom: 20px;" 
+            th:text="${publicacion.id != null} ? '📝 Editar Publicación de Alquiler' : '📝 Registrar Publicación de Alquiler'">
+            📝 Registrar Publicación de Alquiler
+        </h2>
         
         <form th:action="@{/publicaciones/guardar}" method="post">
             
@@ -16,32 +20,45 @@
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Seleccionar Propiedad:</label>
-				<select name="propiedadIdForm" class="form-control" style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;">
-				    <option value="1">Boulevar Gálvez 1500 (Por defecto)</option>
-                    
+                <select name="propiedadIdForm" class="form-control" style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" th:disabled="${publicacion.id != null}">										
                     <option th:each="p : ${propiedadesDisponibles}" 
-				            th:value="${p.id}" 
-				            th:text="${p.direccion}">
-				    </option>
-				</select>
+                            th:value="${p.id}" 
+                            th:text="${p.direccion}"
+                            th:selected="${publicacion.propiedad != null and p.id == publicacion.propiedad.id}">
+                    </option>
+                </select>
+                <input type="hidden" name="propiedadIdForm" th:if="${publicacion.id != null}" th:value="${publicacion.propiedad.id}" />
             </div>
             
-			<div style="margin-bottom: 15px;">
-			    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Precio Mensual ($):</label>
-			    <input type="number" name="precioMensual" step="0.01" required style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" />
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Precio Mensual ($):</label>
+                <input type="number" name="precioMensual" step="0.01" required 
+                       th:value="${publicacion != null} ? ${publicacion.precioMensual} : ''"
+                       style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" />
             </div>
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Condiciones del Alquiler:</label>
-                <input type="text" name="condiciones" placeholder="Ej: Garantía propietaria, no acepta mascotas" style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" />
+                <input type="text" name="condiciones" placeholder="Ej: Garantía propietaria, no acepta mascotas" 
+                       th:value="${publicacion != null} ? ${publicacion.condiciones} : ''"
+                       style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" />
             </div>
 
             <div style="margin-bottom: 15px;">
                 <label style="display: block; font-weight: bold; margin-bottom: 5px;">Descripción de la Publicación:</label>
-                <textarea name="descripcion" rows="4" placeholder="Detalles de la propiedad..." style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;"></textarea>
+                <textarea name="descripcion" rows="4" placeholder="Detalles de la propiedad..." 
+                          th:text="${publicacion != null} ? ${publicacion.descripcion} : ''"
+                          style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;"></textarea>
             </div>
 
-            <input type="hidden" name="estado" value="ACTIVA" />
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="estado" style="display: block; font-weight: bold; margin-bottom: 5px;">Estado de la Publicación:</label>
+                <select name="estadoForm" id="estado" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="ACTIVA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'ACTIVA'}">Activa</option>
+                    <option value="PAUSADA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'PAUSADA'}">Pausada</option>
+                    <option value="FINALIZADA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'FINALIZADA'}">Finalizada</option>
+                </select>
+            </div>
 
             <div style="margin-top: 25px;">
                 <button type="submit" style="background-color: #2e7d32; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">

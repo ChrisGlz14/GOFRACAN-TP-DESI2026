@@ -42,7 +42,13 @@ public class Publicacion {
     @ManyToOne
     @JoinColumn(name = "propiedad_id", nullable = false)
     private Propiedad propiedad; 
+    @jakarta.persistence.OneToMany(mappedBy = "publicacion", cascade = jakarta.persistence.CascadeType.ALL)
+    private java.util.List<HistorialEstadoPublicacion> historialEstados = new java.util.ArrayList<>();
 
+    // El Getter que te estaba pidiendo el servicio a gritos:
+    public java.util.List<HistorialEstadoPublicacion> getHistorialEstados() { 
+        return historialEstados; 
+    }
     // Constructor
     public Publicacion() {
         this.estado = EstadoPublicacion.ACTIVA; 

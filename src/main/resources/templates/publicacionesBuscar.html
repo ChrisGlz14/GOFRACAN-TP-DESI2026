@@ -19,7 +19,8 @@
             <td th:text="${pub.precioMensual}">$150.000</td>
             <td th:text="${pub.estado}">ACTIVA</td>
             <td>
-                <a th:href="@{/publicaciones/editar/{id}(id=${pub.id})}" class="btn-editar">✏️ Editar</a>
+				<a th:href="@{/publicaciones/editar(id=${pub.id})}" class="btn btn-warning">Editar</a>
+
             </td>
         </tr>
     </tbody>

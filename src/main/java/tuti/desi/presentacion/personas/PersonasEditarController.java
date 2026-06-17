@@ -42,7 +42,7 @@ public class PersonasEditarController {
  
 	       modelo.addAttribute("formBean",new PersonaForm());
 		}
-       return "personasEditar";
+       return "persona/personasEditar";
     }
 
     @ModelAttribute("allCiudades")
@@ -70,7 +70,7 @@ public class PersonasEditarController {
     			
                 
     			modelo.addAttribute("formBean",formBean);
-    			 return "personasEditar";
+    			 return "persona/personasEditar";
     		}
     		else
     		{
@@ -88,7 +88,7 @@ public class PersonasEditarController {
                         result.addError(new FieldError("formBean", e.getAtributo(), e.getMessage()));
                     }
                     modelo.addAttribute("formBean", formBean);
-                    return "personasEditar";
+                    return "persona/personasEditar";
                 }
     		}
 

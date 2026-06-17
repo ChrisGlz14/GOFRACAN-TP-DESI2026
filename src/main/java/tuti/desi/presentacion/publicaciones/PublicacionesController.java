@@ -21,7 +21,7 @@ public class PublicacionesController {
     public String listarPublicaciones(Model model) {
         List<Publicacion> lista = publicacionService.obtenerTodas();
         model.addAttribute("publicaciones", lista);
-        return "publicacionesBuscar"; // Abre la pantalla de búsqueda/listado
+        return "publicacion/publicacionesBuscar"; // Abre la pantalla de búsqueda/listado
     }
 
     // 2. Esto se activa al entrar a: localhost:8080/publicaciones/editar
@@ -29,6 +29,6 @@ public class PublicacionesController {
     public String mostrarFormularioEditar(Model model) {
         // Dejamos preparado un objeto vacío para el formulario
         model.addAttribute("publicacion", new Publicacion()); 
-        return "publicacionEditar"; // Abre la pantalla del formulario
+        return "publicacion/publicacionEditar"; // Abre la pantalla del formulario
     }
 }

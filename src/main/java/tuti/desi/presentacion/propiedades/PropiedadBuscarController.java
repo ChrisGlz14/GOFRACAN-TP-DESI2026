@@ -37,7 +37,7 @@ public class PropiedadBuscarController {
 
         // El String que devolvemos es el NOMBRE del template en /templates (sin .html).
         // "propiedadBuscar" -> templates/propiedadBuscar.html
-        return "propiedadBuscar";
+        return "propiedad/propiedadBuscar";
     }
 
     // ===== 2) POST =====
@@ -52,7 +52,7 @@ public class PropiedadBuscarController {
             List<Propiedad> propiedades = propiedadService.obtenerTodas();
             modelo.addAttribute("formBean", formBean);     // así no se borra lo tipeado
             modelo.addAttribute("resultados", propiedades); // en el HTML: th:each="p : ${resultados}"
-            return "propiedadBuscar";
+            return "propiedad/propiedadBuscar";
         }
 
         // Botón "Cancelar": limpiamos y volvemos al inicio.

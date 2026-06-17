@@ -36,7 +36,7 @@ public class CiudadesBuscarController {
     	CiudadesBuscarForm form =  new CiudadesBuscarForm();
     	 form.setProvincias(servicioProvincia.getAll());    //  en lugar de esto hacemos @ModelAttribute("allProvincias")
        modelo.addAttribute("formBean",form);
-       return "ciudadesBuscar";
+       return "ciudad/ciudadesBuscar";
     }
      
     
@@ -58,7 +58,7 @@ public class CiudadesBuscarController {
 			}
     		
     		modelo.addAttribute("formBean",formBean);
-        	return "ciudadesBuscar";
+        	return "ciudad/ciudadesBuscar";
     	}
     	else if(action.equals("actionCancelar"))//presionó el botón cancelar
     	{

@@ -24,4 +24,9 @@ import jakarta.persistence.Table;
 	    public void setId(Long id) { this.id = id; }
 	    public String getDireccion() { return direccion; }
 	    public void setDireccion(String direccion) { this.direccion = direccion; }
+
+		public boolean isDisponible() {
+			// TODO Auto-generated method stub
+			return false;
+		}
 }

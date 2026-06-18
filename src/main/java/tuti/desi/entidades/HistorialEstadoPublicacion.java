@@ -4,35 +4,31 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "historial_estado_publicadon") // Nombre exacto de tu tabla en la BD
+@Table(name = "historial_estado_publicacion")
 public class HistorialEstadoPublicacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING) // Le dice a Hibernate que en la BD guarde el texto ('ACTIVA', 'PAUSADA')
-    @Column(name = "estado_anterior")
-    private EstadoPublicacion estadoAnterior; 
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_nuevo")
-    private EstadoPublicacion estadoNuevo; 
+    @Column(name = "estado", nullable = false) // Coincide con tu columna original 'estado'
+    private EstadoPublicacion estado; 
 
-    @Column(name = "fecha_hora")
-    private LocalDateTime fechaCambio;
+    @Column(name = "fecha_hora", nullable = false) // Coincide con 'fecha_hora'
+    private LocalDateTime fechaHora;
 
+    
     @ManyToOne
-    @JoinColumn(name = "publicacion_id", nullable = false)
+    @JoinColumn(name = "publicacion_id", nullable = false) // Solo esto, sin el @JoinTable
     private Publicacion publicacion;
-
+   
     // --- Constructores ---
     public HistorialEstadoPublicacion() {}
 
-    public HistorialEstadoPublicacion(EstadoPublicacion estadoAnterior, EstadoPublicacion estadoNuevo, LocalDateTime fechaCambio, Publicacion publicacion) {
-        this.estadoAnterior = estadoAnterior;
-        this.estadoNuevo = estadoNuevo;
-        this.fechaCambio = fechaCambio;
+    public HistorialEstadoPublicacion(EstadoPublicacion estado, LocalDateTime fechaHora, Publicacion publicacion) {
+        this.estado = estado;
+        this.fechaHora = fechaHora;
         this.publicacion = publicacion;
     }
 
@@ -40,14 +36,11 @@ public class HistorialEstadoPublicacion {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public EstadoPublicacion getEstadoAnterior() { return estadoAnterior; }
-    public void setEstadoAnterior(EstadoPublicacion estadoAnterior) { this.estadoAnterior = estadoAnterior; }
+    public EstadoPublicacion getEstado() { return estado; }
+    public void setEstado(EstadoPublicacion estado) { this.estado = estado; }
 
-    public EstadoPublicacion getEstadoNuevo() { return estadoNuevo; }
-    public void setEstadoNuevo(EstadoPublicacion estadoNuevo) { this.estadoNuevo = estadoNuevo; }
-
-    public LocalDateTime getFechaCambio() { return fechaCambio; }
-    public void setFechaCambio(LocalDateTime fechaCambio) { this.fechaCambio = fechaCambio; }
+    public LocalDateTime getFechaHora() { return fechaHora; }
+    public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
 
     public Publicacion getPublicacion() { return publicacion; }
     public void setPublicacion(Publicacion publicacion) { this.publicacion = publicacion; }

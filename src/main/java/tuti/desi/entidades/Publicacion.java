@@ -2,6 +2,9 @@ package tuti.desi.entidades;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -83,4 +86,7 @@ public class Publicacion {
     
     public Propiedad getPropiedad() { return propiedad; }
     public void setPropiedad(Propiedad propiedad) { this.propiedad = propiedad; }
+    public void setHistorialEstados(List<HistorialEstadoPublicacion> historialEstados) {
+        this.historialEstados = historialEstados;
+    }
 }

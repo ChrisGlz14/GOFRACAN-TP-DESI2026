@@ -2,6 +2,7 @@ package tuti.desi.presentacion.publicaciones;
 
 import java.util.List;
 import java.math.BigDecimal;
+import java.time.LocalDateTime; // Importamos para la fecha del historial
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import tuti.desi.entidades.Publicacion;
 import tuti.desi.entidades.EstadoPublicacion;
+import tuti.desi.entidades.HistorialEstadoPublicacion; // Importamos la entidad historial
+import tuti.desi.accesoDatos.IHistorialEstadoPublicacionRepo; // Importamos tu nuevo repositorio
 import tuti.desi.servicios.PropiedadService;
 import tuti.desi.servicios.PublicacionService;
 
@@ -25,6 +28,9 @@ public class PublicacionesController {
 
     @Autowired
     private PropiedadService propiedadService; 
+
+    @Autowired
+    private IHistorialEstadoPublicacionRepo historialRepo; // Inyectamos el repo para guardar directo
 
     // 1. Pantalla principal de BUSCAR / LISTAR (HU 2.4 con Filtros Sincronizados)
     @GetMapping
@@ -74,7 +80,7 @@ public class PublicacionesController {
             @RequestParam(value = "precioMensual", required = false) Double precioMensual, 
             @RequestParam(value = "condiciones", required = false) String condiciones,     
             @RequestParam(value = "descripcion", required = false) String descripcion,     
-            @RequestParam(value = "estadoForm", required = false) String estadoForm, // Coincide con tu HTML corregido
+            @RequestParam(value = "estadoForm", required = false) String estadoForm, 
             @RequestParam(value = "propiedadIdForm", required = false) Long propiedadIdForm, 
             Model model) {
         
@@ -84,6 +90,8 @@ public class PublicacionesController {
         }
 
         Publicacion publicacion;
+        boolean registrarHistorial = false;
+        EstadoPublicacion estadoNuevo = null;
 
         // ESTRATEGIA DE ANALISTA: Si el ID existe, recuperamos el registro histórico de la base de datos
         if (id != null) {
@@ -91,9 +99,17 @@ public class PublicacionesController {
             if (publicacion == null) {
                 publicacion = new Publicacion();
                 publicacion.setId(id);
-                publicacion.setFechaPublicacion(java.time.LocalDate.now()); // Respaldo de emergencia
+                publicacion.setFechaPublicacion(java.time.LocalDate.now());
+            } else {
+                // 🚀 INTERCEPCIÓN DEL HISTORIAL: Verificamos el cambio ANTES de pisar el objeto
+                if (estadoForm != null && !estadoForm.isEmpty()) {
+                    estadoNuevo = EstadoPublicacion.valueOf(estadoForm);
+                    // Si el estado que tiene en la BD es diferente al que viene de la pantalla...
+                    if (!publicacion.getEstado().equals(estadoNuevo)) {
+                        registrarHistorial = true; // Dejamos la bandera en true para grabar después
+                    }
+                }
             }
-            // NOTA: Si ya existía, NO tocamos la fecha original para no romper la consistencia histórica.
         } else {
             // Si el ID es null, es un ALTA real: creamos objeto en blanco y asignamos fecha de hoy
             publicacion = new Publicacion();
@@ -111,7 +127,7 @@ public class PublicacionesController {
         publicacion.setDescripcion(descripcion != null ? descripcion : "");
         publicacion.setEliminada(false);
         
-        // Mapeo del Estado del combo dinámico del HTML
+        // Mapeo del Estado del combo dinámico del HTML al objeto
         if (estadoForm != null && !estadoForm.isEmpty()) {
             publicacion.setEstado(EstadoPublicacion.valueOf(estadoForm));
         } else if (publicacion.getEstado() == null) {
@@ -132,7 +148,6 @@ public class PublicacionesController {
             try {
                 yaExisteActiva = publicacionService.existePublicacionActivaParaPropiedad(propiedadIdForm);
             } catch (Exception e) {
-                // Si la validación interna tiene fallas, el catch ataja el error y te permite seguir
                 yaExisteActiva = false; 
             }
             
@@ -145,8 +160,18 @@ public class PublicacionesController {
             }
         }
 
-        // Guardado final en la base de datos
+        // Guardado final de la publicación en la base de datos
         publicacionService.guardar(publicacion);
+
+        // 🚀 OBLIGAMOS A MYSQL A CREAR EL REGISTRO DEL HISTORIAL
+        if (registrarHistorial) {
+            HistorialEstadoPublicacion historial = new HistorialEstadoPublicacion();
+            historial.setPublicacion(publicacion);
+            historial.setEstado(estadoNuevo); // El estado nuevo pedido por el diagrama
+            historial.setFechaHora(LocalDateTime.now()); // Columna fecha_hora
+            
+            historialRepo.save(historial); // El insert directo infalible
+        }
         
         return "redirect:/publicaciones"; 
     }

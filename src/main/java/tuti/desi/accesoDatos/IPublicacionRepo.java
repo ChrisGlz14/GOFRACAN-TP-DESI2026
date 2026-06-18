@@ -1,21 +1,22 @@
 package tuti.desi.accesoDatos;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query; // <-- AGREGADO
-import org.springframework.data.repository.query.Param; // <-- AGREGADO
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tuti.desi.entidades.Publicacion;
-import tuti.desi.entidades.EstadoPublicacion; // <-- AGREGADO (Asegurate de que este sea el paquete correcto de tu Enum)
+import tuti.desi.entidades.EstadoPublicacion;
 
 @Repository
 public interface IPublicacionRepo extends JpaRepository<Publicacion, Long> {
-	
-    boolean existsByPropiedadIdAndEstadoAndEliminadaFalse(Long propiedadId, String estado);
+    
+    boolean existsByPropiedadIdAndEstadoAndEliminadaFalse(Long propiedadId, EstadoPublicacion estado);
 
     List<Publicacion> findByEliminadaFalse();
 
- // El súper filtro de la HU 2.4 (Sin el atributo ciudad por ahora para que no rompa)
+    // El filtro de la HU 2.4 adaptado 100% a las variables reales de tu modelo
     @Query("SELECT p FROM Publicacion p WHERE p.eliminada = false " +
            "AND (:propiedadId IS NULL OR p.propiedad.id = :propiedadId) " +
            "AND (:estado IS NULL OR p.estado = :estado) " +
@@ -24,7 +25,7 @@ public interface IPublicacionRepo extends JpaRepository<Publicacion, Long> {
     List<Publicacion> buscarConFiltros(
         @Param("propiedadId") Long propiedadId,
         @Param("estado") EstadoPublicacion estado,
-        @Param("precioMin") Double precioMin,
-        @Param("precioMax") Double precioMax
+        @Param("precioMin") BigDecimal precioMin,
+        @Param("precioMax") BigDecimal precioMax
     );
 }

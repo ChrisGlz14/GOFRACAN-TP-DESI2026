@@ -11,7 +11,7 @@ public interface ContratoServicio {
 	
     void save(Contrato c) throws Excepcion; // alta o modificacion 
     
-    void deleteById(Long id); //baja
+    void deleteById(Long id) throws Excepcion; //baja
     
     Contrato getById(Long id);  //busca por id  
    

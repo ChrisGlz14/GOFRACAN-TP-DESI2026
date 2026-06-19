@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 import tuti.desi.entidades.Contrato;
 
@@ -32,10 +32,11 @@ public class ContratoForm {
     @NotNull(message = "El importe mensual es obligatorio")
     private BigDecimal importeMensual; //El importe mensual deberá ser un número positivo.
 
-    @NotNull(message = "El día de vencimiento es obligatorio")
-    @Pattern(regexp = "\\d{1,31}", message = "El día debe ser entre 1 y 31")
-    private Integer diaVencimientoMensual; //El día de vencimiento mensual deberá ser un número válido entre 1 y 31.
-
+       @NotNull(message = "El día de vencimiento es obligatorio")
+    @Min(value = 1, message = "El día debe ser mayor o igual a 1")
+    @Max(value = 31, message = "El día debe ser menor o igual a 31")
+    private Integer diaVencimientoMensual;//El día de vencimiento mensual deberá ser un número válido entre 1 y 31.
+    
     @Size(max = 500) 
     private String descripcion;
 
@@ -77,6 +78,7 @@ public class ContratoForm {
         contrato.setImporteMensual(importeMensual);
         contrato.setDiaVencimientoMensual(diaVencimientoMensual);
         contrato.setDescripcion(descripcion);
+        
 
         return contrato;
     }

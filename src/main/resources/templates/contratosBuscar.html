@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Listado de Contratos</title>
+</head>
+<body>
+
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/contratosEditar}" class="btn-nuevo">
+        ➕ Nuevo Contrato
+    </a>
+</div>
+
+<table border="1" style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th>ID</th>
+            <th>Propiedad</th>
+            <th>Propietario</th>
+            <th>Inquilino</th>
+            <th>Fecha Inicio</th>
+            <th>Importe Mensual</th>
+            <th>Día Vencimiento</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr th:each="contrato : ${contratos}">
+
+            <td th:text="${contrato.id}"></td>
+
+            <td th:text="${contrato.propiedad.direccion}"></td>
+
+            <td th:text="${contrato.propietario.apellido + ', ' + contrato.propietario.nombre}">
+            </td>
+
+            <td th:text="${contrato.inquilino.apellido + ', ' + contrato.inquilino.nombre}">
+            </td>
+
+            <td th:text="${contrato.fechaInicio}"></td>
+
+            <td th:text="${contrato.importeMensual}"></td>
+
+            <td th:text="${contrato.diaVencimientoMensual}"></td>
+
+            <td th:text="${contrato.estado}"></td>
+
+            <td>
+                <a th:href="@{/contratosEditar/{id}(id=${contrato.id})}">
+                    ✏️ Editar
+                </a>
+
+                |
+
+                <a th:href="@{/contratosEliminar/{id}(id=${contrato.id})}">
+                    🗑 Eliminar
+                </a>
+            </td>
+
+        </tr>
+    </tbody>
+</table>
+
+</body>

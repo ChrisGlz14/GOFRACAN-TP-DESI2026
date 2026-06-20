@@ -6,7 +6,7 @@ import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.Excepcion;
 
 // La interfaz define QUÉ se puede hacer (el contrato), no el CÓMO.
-// El controller depende de esta interfaz, no de la implementación concreta.
+// El controller depende de esta interfaz.
 public interface PropiedadService {
 
     List<Propiedad> obtenerTodas();
@@ -14,4 +14,6 @@ public interface PropiedadService {
     Propiedad guardar(Propiedad propiedad) throws Excepcion;
 
     Propiedad buscarPorId(Long id);
+
+    void eliminar(Long id) throws Excepcion;
 }

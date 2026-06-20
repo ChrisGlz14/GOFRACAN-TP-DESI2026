@@ -34,7 +34,7 @@ public class CiudadesBuscarController {
     @RequestMapping(method=RequestMethod.GET)
     public String preparaForm(Model modelo) {
     	CiudadesBuscarForm form =  new CiudadesBuscarForm();
-    	 form.setProvincias(servicioProvincia.getAll());    //  en lugar de esto hacemos @ModelAttribute("allProvincias")
+    	 form.setProvincias(servicioProvincia.getAll());  
        modelo.addAttribute("formBean",form);
        return "ciudad/ciudadesBuscar";
     }
@@ -47,7 +47,7 @@ public class CiudadesBuscarController {
     
     @RequestMapping( method=RequestMethod.POST)
     public String submit( @ModelAttribute("formBean") @Valid CiudadesBuscarForm  formBean,BindingResult result, ModelMap modelo,@RequestParam String action) throws Excepcion {
-    	if(action.equals("actionBuscar"))//presionó el botón buscar
+    	if(action.equals("actionBuscar"))
     	{
     		try {
     			List<Ciudad> ciudades = servicioCiudad.filter(formBean);
@@ -60,15 +60,15 @@ public class CiudadesBuscarController {
     		modelo.addAttribute("formBean",formBean);
         	return "ciudad/ciudadesBuscar";
     	}
-    	else if(action.equals("actionCancelar"))//presionó el botón cancelar
+    	else if(action.equals("actionCancelar"))
     	{
     		modelo.clear();
-    		return "redirect:/"; //voy a la index
+    		return "redirect:/"; //voy a la pagina de inicio
     	}
-    	else if(action.equals("actionRegistrar")) //presionó el botón registrar
+    	else if(action.equals("actionRegistrar"))
     	{
     		modelo.clear();
-    		return "redirect:/ciudadEditar"; //voy al formulario de alta/edicion pero sin un id (notar que desde ciudadesBuscar.html redirecciono a /ciudadEditar/{id}, indicando que quiero editar esa ciudad en particular)
+    		return "redirect:/ciudadEditar"; //voy al formulario de alta/edicion pero sin un id (desde ciudadesBuscar.html redirecciono a /ciudadEditar/{id}, indicando que quiero editar esa ciudad)
     	}
     		
     	return "redirect:/";

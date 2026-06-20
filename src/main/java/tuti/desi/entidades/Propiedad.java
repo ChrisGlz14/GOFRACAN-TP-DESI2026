@@ -62,9 +62,13 @@ public class Propiedad {
 	@JoinColumn(name = "propietario_id", nullable = false)
 	private Persona propietario;
 
+	// baja logica: al eliminar la marco en true y no la borro fisico (igual que Publicacion)
+	private boolean eliminada;
+
 	public Propiedad() {
 		// Al dar de alta, el estado por defecto es DISPONIBLE
 		this.estado = EstadoPropiedad.DISPONIBLE;
+		this.eliminada = false;
 	}
 
 	public Long getId() {
@@ -137,5 +141,13 @@ public class Propiedad {
 
 	public void setPropietario(Persona propietario) {
 		this.propietario = propietario;
+	}
+
+	public boolean isEliminada() {
+		return eliminada;
+	}
+
+	public void setEliminada(boolean eliminada) {
+		this.eliminada = eliminada;
 	}
 }

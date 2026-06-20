@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import tuti.desi.entidades.Ciudad;
@@ -27,7 +28,7 @@ import tuti.desi.servicios.CiudadService;
 import tuti.desi.servicios.PersonaService;
 import tuti.desi.servicios.PropiedadService;
 
-// pantalla de alta de una propiedad (HU 1.1), armado igual que CiudadRegistrarEditarController
+// pantalla de alta de una propiedad historia de usuario 1
 @Controller
 @RequestMapping("/propiedadEditar")
 public class PropiedadEditarController {
@@ -49,6 +50,18 @@ public class PropiedadEditarController {
             modelo.addAttribute("formBean", new PropiedadForm());
         }
         return "propiedad/propiedadEditar";
+    }
+
+    @RequestMapping(path = "/delete/{id}", method = RequestMethod.POST)
+    public String deleteById(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            servicioPropiedad.eliminar(id);
+            redirectAttributes.addFlashAttribute("mensajeOk", "La propiedad se elimino correctamente");
+        } catch (Excepcion e) {
+            // si no se pudo eliminar muestro el motivo en la pantalla de busqueda
+            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+        }
+        return "redirect:/propiedadBuscar";
     }
 
     // lista de ciudades para el combo

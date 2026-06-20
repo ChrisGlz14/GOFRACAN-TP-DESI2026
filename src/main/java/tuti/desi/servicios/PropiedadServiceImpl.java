@@ -10,6 +10,7 @@ import tuti.desi.accesoDatos.IHistorialEstadoPropiedadRepo;
 import tuti.desi.accesoDatos.IPropiedadRepo;
 import tuti.desi.entidades.HistorialEstadoPropiedad;
 import tuti.desi.entidades.Propiedad;
+import tuti.desi.excepciones.EntidadNoEncontradaException;
 import tuti.desi.excepciones.Excepcion;
 
 // @Service: marca esta clase como la implementación que Spring va a inyectar
@@ -24,7 +25,8 @@ public class PropiedadServiceImpl implements PropiedadService {
 
     @Override
     public List<Propiedad> obtenerTodas() {
-        return propiedadRepo.findAll();
+        // solo las no eliminadas, asi las que estan dadas de baja no salen en el listado
+        return propiedadRepo.findByEliminadaFalse();
     }
 
     @Override
@@ -49,5 +51,20 @@ public class PropiedadServiceImpl implements PropiedadService {
     @Override
     public Propiedad buscarPorId(Long id) {
         return propiedadRepo.findById(id).orElse(null);
+    }
+
+    @Override
+    public void eliminar(Long id) throws Excepcion {
+        Propiedad propiedad = propiedadRepo.findById(id)
+                .orElseThrow(() -> new EntidadNoEncontradaException("la propiedad", id));
+
+        // no se puede eliminar una propiedad con un contrato activo vigente
+        if (propiedadRepo.contarContratosActivos(id) > 0) {
+            throw new Excepcion("No se puede eliminar la propiedad porque tiene un contrato activo vigente");
+        }
+
+        // baja logica: solo la marco como eliminada, asi no pierdo publicaciones, contratos, etc.
+        propiedad.setEliminada(true);
+        propiedadRepo.save(propiedad);
     }
 }

@@ -1,21 +1,21 @@
 package tuti.desi.servicios;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tuti.desi.accesoDatos.IContratoRepo;
-//import tuti.desi.accesoDatos.IHistorialEstadoContratoRepo;
+import tuti.desi.accesoDatos.IHistorialEstadoContratoRepo;
 //import tuti.desi.accesoDatos.IPropiedadRepo;
 //import tuti.desi.entidades.EstadoPropiedad;
-//import tuti.desi.entidades.HistorialEstadoContrato;
+import tuti.desi.entidades.HistorialEstadoContrato;
 //import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.EntidadNoEncontradaException;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.entidades.Contrato;
 import tuti.desi.entidades.EstadoContrato;
+
 
 
 @Service
@@ -24,8 +24,8 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     @Autowired
     IContratoRepo repo;
 
-    //@Autowired
-    //IHistorialEstadoContratoRepo historialRepo;
+    @Autowired
+    IHistorialEstadoContratoRepo historialRepo;
 
     //@Autowired
     //IPropiedadRepo propiedadRepo;
@@ -77,65 +77,54 @@ public class ContratoServicioImplementacion implements ContratoServicio {
 
     private void altaContrato(Contrato contrato) {
 
-        // Regla: al dar de alta, el contrato siempre arranca en "borrador".
-        // No importa lo que venga seteado en el objeto recibido.
-        // Por eso acá no validamos disponibilidad de la propiedad: esa
-        // regla aplica recién cuando el contrato pasa a "activo", lo cual
-        // ocurre en modificarContrato().
         contrato.setEstado(EstadoContrato.borrador);
-
         repo.save(contrato);
 
-        // Primer evento de historial: nace en borrador.
-        // registrarHistorial(contrato, EstadoContrato.borrador);
+        registrarHistorial(contrato, EstadoContrato.borrador);
     }
 
  
     // MODIFICACIÓN
     private void modificarContrato(Contrato contratoNuevo) throws Excepcion {
 
-        // Traemos la versión gestionada (la que está en base) para
-        // comparar el estado viejo contra el nuevo.
         Contrato contratoActual = getById(contratoNuevo.getId());
 
         EstadoContrato estadoActual = contratoActual.getEstado();
         EstadoContrato estadoNuevo = contratoNuevo.getEstado();
 
-        // 1) Transición de estado coherente
         validarTransicion(estadoActual, estadoNuevo);
 
-        // 2) Si pasa a ACTIVO, validar reglas de activación
+        //validar disponibilidad de la propiedad
         boolean seActiva = (estadoActual != EstadoContrato.activo
                 && estadoNuevo == EstadoContrato.activo);
-    }
-        /*    if (seActiva) {
-            validarPuedeActivarse(contratoNuevo);
-        }
 
-        // 3) Aplicar cambios sobre la entidad gestionada
+        // PENDIENTE (depende de Propiedad, esperando merge):
+        // if (seActiva) {
+        //     validarPuedeActivarse(contratoNuevo);
+        // }
+
+        // guardar los cambios 
         contratoActual.setFechaInicio(contratoNuevo.getFechaInicio());
         contratoActual.setDuracionMeses(contratoNuevo.getDuracionMeses());
         contratoActual.setImporteMensual(contratoNuevo.getImporteMensual());
         contratoActual.setDiaVencimientoMensual(contratoNuevo.getDiaVencimientoMensual());
         contratoActual.setDescripcion(contratoNuevo.getDescripcion());
-        //contratoActual.setPropiedad(contratoNuevo.getPropiedad());
         contratoActual.setPropietario(contratoNuevo.getPropietario());
         contratoActual.setInquilino(contratoNuevo.getInquilino());
         contratoActual.setEstado(estadoNuevo);
 
         repo.save(contratoActual);
 
-        // 4) Si hubo cambio real de estado: historial + sincronizar Propiedad
+        // actualizar historial
         if (estadoActual != estadoNuevo) {
             registrarHistorial(contratoActual, estadoNuevo);
-            actualizarEstadoPropiedadSegunContrato(contratoActual, estadoActual, estadoNuevo);
+            // PENDIENTE (depende de Propiedad, esperando merge):
+            // actualizarEstadoPropiedadSegunContrato(contratoActual, estadoActual, estadoNuevo);
         }
-    }*/
+    }
 
 
-    // Transiciones válidas de estado del contrato
-
-    private void validarTransicion(EstadoContrato actual, EstadoContrato nuevo) throws Excepcion {
+      private void validarTransicion(EstadoContrato actual, EstadoContrato nuevo) throws Excepcion {
 
         if (actual == nuevo) {
             return;
@@ -180,8 +169,6 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     }
 
     
- 
- 
     private void actualizarEstadoPropiedadSegunContrato(
             Contrato contrato, EstadoContrato estadoViejo, EstadoContrato estadoNuevo) {
 
@@ -199,7 +186,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
             propiedad.setEstado(EstadoPropiedad.DISPONIBLE);
             propiedadRepo.save(propiedad);
         }
-    }
+    }*/
 
 
     // Historial de estados
@@ -207,7 +194,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     private void registrarHistorial(Contrato contrato, EstadoContrato estado) {
         HistorialEstadoContrato registro = new HistorialEstadoContrato(contrato, estado);
         historialRepo.save(registro);
-    }*/
+    }
 
 
     // BAJA 
@@ -216,7 +203,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     public void deleteById(Long id) throws Excepcion {
         Contrato contrato = getById(id);
 
-        // Regla: solo se pueden eliminar contratos en estado "borrador".
+        // unicamente se pueden eliminar contratos en estado "borrador".
         if (contrato.getEstado() != EstadoContrato.borrador) {
             throw new Excepcion(
                 "No se puede eliminar el contrato: solo se permite eliminar "
@@ -224,8 +211,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
                 + contrato.getEstado() + ")");
         }
 
-        // Regla: la baja no debe afectar el estado de la propiedad
-        // (no tocamos contrato.getPropiedad() para nada acá).
+        // la baja no debe afectar el estado de la propiedad
         contrato.setEliminado(true);
         repo.save(contrato);
     }

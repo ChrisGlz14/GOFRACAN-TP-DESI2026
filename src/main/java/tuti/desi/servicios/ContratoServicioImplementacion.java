@@ -11,7 +11,7 @@ import tuti.desi.accesoDatos.IContratoRepo;
 //import tuti.desi.accesoDatos.IPropiedadRepo;
 //import tuti.desi.entidades.EstadoPropiedad;
 //import tuti.desi.entidades.HistorialEstadoContrato;
-import tuti.desi.entidades.Propiedad;
+//import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.EntidadNoEncontradaException;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.entidades.Contrato;
@@ -59,9 +59,9 @@ public class ContratoServicioImplementacion implements ContratoServicio {
                 || contrato.getDiaVencimientoMensual() > 31) {
             throw new Excepcion("El día de vencimiento debe estar entre 1 y 31");
         }
-        if (contrato.getPropiedad() == null) {
-            throw new Excepcion("Debe seleccionar una propiedad");
-        }
+       // if (contrato.getPropiedad() == null) {
+        //    throw new Excepcion("Debe seleccionar una propiedad");
+        //}
 
         boolean esAlta = (contrato.getId() == null);
 
@@ -87,7 +87,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         repo.save(contrato);
 
         // Primer evento de historial: nace en borrador.
-        registrarHistorial(contrato, EstadoContrato.borrador);
+        // registrarHistorial(contrato, EstadoContrato.borrador);
     }
 
  
@@ -107,8 +107,8 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         // 2) Si pasa a ACTIVO, validar reglas de activación
         boolean seActiva = (estadoActual != EstadoContrato.activo
                 && estadoNuevo == EstadoContrato.activo);
-
-        if (seActiva) {
+    }
+        /*    if (seActiva) {
             validarPuedeActivarse(contratoNuevo);
         }
 
@@ -118,7 +118,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         contratoActual.setImporteMensual(contratoNuevo.getImporteMensual());
         contratoActual.setDiaVencimientoMensual(contratoNuevo.getDiaVencimientoMensual());
         contratoActual.setDescripcion(contratoNuevo.getDescripcion());
-        contratoActual.setPropiedad(contratoNuevo.getPropiedad());
+        //contratoActual.setPropiedad(contratoNuevo.getPropiedad());
         contratoActual.setPropietario(contratoNuevo.getPropietario());
         contratoActual.setInquilino(contratoNuevo.getInquilino());
         contratoActual.setEstado(estadoNuevo);
@@ -130,7 +130,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
             registrarHistorial(contratoActual, estadoNuevo);
             actualizarEstadoPropiedadSegunContrato(contratoActual, estadoActual, estadoNuevo);
         }
-    }
+    }*/
 
 
     // Transiciones válidas de estado del contrato
@@ -157,7 +157,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
    
     //  activar un contrato
 
-     private void validarPuedeActivarse(Contrato contrato) throws Excepcion {
+    /* private void validarPuedeActivarse(Contrato contrato) throws Excepcion {
 
         Propiedad propiedad = contrato.getPropiedad();
 
@@ -207,7 +207,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     private void registrarHistorial(Contrato contrato, EstadoContrato estado) {
         HistorialEstadoContrato registro = new HistorialEstadoContrato(contrato, estado);
         historialRepo.save(registro);
-    }
+    }*/
 
 
     // BAJA 

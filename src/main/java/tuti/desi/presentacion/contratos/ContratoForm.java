@@ -46,10 +46,10 @@ public class ContratoForm {
     public ContratoForm(Contrato contrato) {
         this.id = contrato.getId();
     
-        this.idPropiedad =
-                contrato.getPropiedad() == null
-                ? null
-                : contrato.getPropiedad().getId();
+        //this.idPropiedad =
+          //      contrato.getPropiedad() == null
+         //       ? null
+          //      : contrato.getPropiedad().getId();
         
         this.idPropietario =
                 contrato.getPropietario() == null

@@ -13,13 +13,13 @@ public class ContratoForm {
 	
 	private Long id;
 
-	@NotNull(message = "La propiedad es obligatoria")
+	//@NotNull(message = "La propiedad es obligatoria")
 	private Long idPropiedad;
 	
-	@NotNull(message = "El propietario es obligatorio")
+	//@NotNull(message = "El propietario es obligatorio")
 	private Long idPropietario; //NO estaba en la historia de usuario pero la agrego porque estaba en la BD
 
-	@NotNull(message = "El inquilino es obligatorio")
+	//@NotNull(message = "El inquilino es obligatorio")
 	private Long idInquilino; //El inquilino deberá seleccionarse desde una lista de personas registradas y no eliminadas.
     
     @NotNull(message = "La fecha de inicio es obligatoria")
@@ -78,6 +78,9 @@ public class ContratoForm {
         contrato.setImporteMensual(importeMensual);
         contrato.setDiaVencimientoMensual(diaVencimientoMensual);
         contrato.setDescripcion(descripcion);
+        //contrato.setPropiedad(...)
+       // contrato.setPropietario(...)
+        //contrato.setInquilino(...)
         
 
         return contrato;

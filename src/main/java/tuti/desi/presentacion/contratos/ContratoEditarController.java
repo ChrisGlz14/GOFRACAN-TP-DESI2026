@@ -89,6 +89,9 @@ public class ContratoEditarController {
 
             } catch (Excepcion e) {
 
+            	e.printStackTrace();
+
+                modelo.addAttribute("error", e.getMessage());
                 modelo.addAttribute("formBean", formBean);
 
                 return "contratosEditar";

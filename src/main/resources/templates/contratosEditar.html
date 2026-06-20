@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Contrato</title>
+</head>
+<body>
+
+<h1>Contrato</h1>
+
+<p th:if="${error}"
+   th:text="${error}">
+</p>
+
+<form th:object="${formBean}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+    
+ 	Propietario:   
+    <select th:field="*{idPropietario}">
+    <option value="">Seleccione...</option>
+    <option th:each="p : ${allPersonas}"
+            th:value="${p.id}"
+            th:text="${p.nombre + ' ' + p.apellido}">
+    </option>
+	</select>
+	<br><br>
+
+	Inquilino:
+	<select th:field="*{idInquilino}">
+    <option value="">Seleccione...</option>
+    <option th:each="p : ${allPersonas}"
+            th:value="${p.id}"
+            th:text="${p.nombre + ' ' + p.apellido}">
+    </option>
+    </select>
+	<br><br>
+	
+    Fecha Inicio:
+    <input type="date" th:field="*{fechaInicio}" />
+    <br><br>
+
+    Duración:
+    <input type="number" th:field="*{duracionMeses}" />
+    <br><br>
+
+    Importe:
+    <input type="number" step="0.01"
+           th:field="*{importeMensual}" />
+    <br><br>
+
+    Día Vencimiento:
+    <input type="number"
+           th:field="*{diaVencimientoMensual}" />
+    <br><br>
+
+    Descripción:
+    <textarea th:field="*{descripcion}"></textarea>
+    <br><br>
+
+    <button type="submit"
+            name="action"
+            value="Aceptar">
+        Guardar
+    </button>
+
+    <button type="submit"
+            name="action"
+            value="Cancelar">
+        Cancelar
+    </button>
+
+</form>
+
+</body>
+</html>

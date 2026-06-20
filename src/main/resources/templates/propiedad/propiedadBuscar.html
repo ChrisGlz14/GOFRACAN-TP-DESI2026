@@ -14,7 +14,7 @@
         </h2>
     </div>
 
-	<form  th:action="@{/propiedadesBuscar}" th:object="${formBean}" method="post">
+	<form  th:action="@{/propiedadBuscar}" th:object="${formBean}" method="post">
 		<p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" />
 		<table border="1" style="align-self: center;">
 	        <tr>

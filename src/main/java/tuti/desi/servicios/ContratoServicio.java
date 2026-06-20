@@ -1,7 +1,9 @@
 package tuti.desi.servicios;
 
+import java.time.LocalDate;
 import java.util.List;
 import tuti.desi.entidades.Contrato;
+import tuti.desi.entidades.EstadoContrato;
 import tuti.desi.excepciones.Excepcion;
 
 public interface ContratoServicio {
@@ -16,5 +18,6 @@ public interface ContratoServicio {
     Contrato getById(Long id);  //busca por id  
    
     List<Contrato> getAll(); //obtiene todos los contratos
+    List<Contrato> buscar(Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde);
 
 }

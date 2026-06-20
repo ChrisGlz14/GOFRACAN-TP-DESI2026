@@ -3,6 +3,8 @@ package tuti.desi.presentacion.contratos;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Max;
@@ -16,15 +18,16 @@ public class ContratoForm {
 	//@NotNull(message = "La propiedad es obligatoria")
 	private Long idPropiedad;
 	
-	//@NotNull(message = "El propietario es obligatorio")
+	@NotNull(message = "El propietario es obligatorio")
 	private Long idPropietario; //NO estaba en la historia de usuario pero la agrego porque estaba en la BD
 
-	//@NotNull(message = "El inquilino es obligatorio")
+	@NotNull(message = "El inquilino es obligatorio")
 	private Long idInquilino; //El inquilino deberá seleccionarse desde una lista de personas registradas y no eliminadas.
     
     @NotNull(message = "La fecha de inicio es obligatoria")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaInicio; //La fecha de inicio deberá ser una fecha válida
-
+   
     @NotNull(message = "La duración es obligatoria")
     @Min(value = 1, message = "La duración debe ser mayor a 1 mes")
     private Integer duracionMeses; //La duración en meses debe ser un número positivo

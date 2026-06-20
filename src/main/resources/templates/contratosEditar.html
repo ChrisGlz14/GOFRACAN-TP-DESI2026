@@ -16,16 +16,17 @@
 
     <input type="hidden" th:field="*{id}" />
     
- 	Propietario:   
-    <select th:field="*{idPropietario}">
-    <option value="">Seleccione...</option>
-    <option th:each="p : ${allPersonas}"
-            th:value="${p.id}"
-            th:text="${p.nombre + ' ' + p.apellido}">
-    </option>
+	Propietario:
+	<select th:field="*{idPropietario}">
+	<option value="">Seleccione...</option>
+	<option th:each="p : ${allPersonas}"
+	        th:value="${p.id}"
+	        th:text="${p.nombre + ' ' + p.apellido}">
+	</option>
 	</select>
+	<span th:if="${#fields.hasErrors('idPropietario')}" th:errors="*{idPropietario}" style="color:red;"></span>
 	<br><br>
-
+	
 	Inquilino:
 	<select th:field="*{idInquilino}">
     <option value="">Seleccione...</option>
@@ -34,6 +35,7 @@
             th:text="${p.nombre + ' ' + p.apellido}">
     </option>
     </select>
+	<span th:if="${#fields.hasErrors('idInquilino')}" th:errors="*{idInquilino}" style="color:red;"></span>
 	<br><br>
 	
     Fecha Inicio:

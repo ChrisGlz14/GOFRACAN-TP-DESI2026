@@ -1,5 +1,9 @@
+//aca van los metodos y los mensajes de error
+
 package tuti.desi.servicios;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +19,6 @@ import tuti.desi.excepciones.EntidadNoEncontradaException;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.entidades.Contrato;
 import tuti.desi.entidades.EstadoContrato;
-
-
 
 @Service
 public class ContratoServicioImplementacion implements ContratoServicio {
@@ -214,5 +216,27 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         // la baja no debe afectar el estado de la propiedad
         contrato.setEliminado(true);
         repo.save(contrato);
+    }
+    
+    @Override
+    public List<Contrato> buscar(Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde) {
+
+        List<Contrato> todos = repo.findByEliminadoFalse();
+        List<Contrato> resultado = new ArrayList<>();
+
+        for (Contrato c : todos) {
+            if (idInquilino != null && !c.getInquilino().getId().equals(idInquilino)) {
+                continue;
+            }
+            if (estado != null && c.getEstado() != estado) {
+                continue;
+            }
+            if (fechaInicioDesde != null && c.getFechaInicio().isBefore(fechaInicioDesde)) {
+                continue;
+            }
+            resultado.add(c);
+        }
+
+        return resultado;
     }
 }

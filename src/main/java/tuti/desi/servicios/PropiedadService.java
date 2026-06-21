@@ -12,6 +12,9 @@ public interface PropiedadService {
 
     List<Propiedad> obtenerTodas();
 
+    // para el combo de publicaciones: propiedades no eliminadas
+    List<Propiedad> obtenerDisponibles();
+
     List<Propiedad> filter(PropiedadesBuscarForm filter);
 
     Propiedad guardar(Propiedad propiedad) throws Excepcion;

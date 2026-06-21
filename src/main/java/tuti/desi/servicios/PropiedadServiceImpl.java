@@ -32,6 +32,11 @@ public class PropiedadServiceImpl implements PropiedadService {
     }
 
     @Override
+    public List<Propiedad> obtenerDisponibles() {
+        return propiedadRepo.findByEliminadaFalse();
+    }
+
+    @Override
     public List<Propiedad> filter(PropiedadesBuscarForm filter) {
         return propiedadRepo.filter(filter.getDireccion(), filter.getCiudadSeleccionada(), filter.getTipo(), filter.getEstado());
     }

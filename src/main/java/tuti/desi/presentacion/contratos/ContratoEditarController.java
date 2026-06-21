@@ -11,9 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-
 import tuti.desi.entidades.Contrato;
 import tuti.desi.entidades.Persona;
+import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.servicios.ContratoServicio;
 import tuti.desi.servicios.PersonaService;
@@ -28,24 +28,19 @@ public class ContratoEditarController {
     @Autowired
     private PersonaService personaService;
 
+    
     @RequestMapping(path = {"", "/{id}"}, method = RequestMethod.GET)
     public String preparaForm(Model modelo,
                               @PathVariable("id") Optional<Long> id) {
-
         if (id.isPresent()) {
-
             Contrato entity = service.getById(id.get());
-
             ContratoForm form = new ContratoForm(entity);
-
             modelo.addAttribute("formBean", form);
-
+            modelo.addAttribute("esAlta", false);
         } else {
-
-            modelo.addAttribute("formBean",
-                    new ContratoForm());
+            modelo.addAttribute("formBean", new ContratoForm());
+            modelo.addAttribute("esAlta", true);
         }
-
         return "contratosEditar";
     }
 
@@ -54,57 +49,40 @@ public class ContratoEditarController {
         return personaService.getAll();
     }
 
+   
     @RequestMapping(method = RequestMethod.POST)
     public String submit(
-            @ModelAttribute("formBean")
-            @Valid ContratoForm formBean,
+            @ModelAttribute("formBean") @Valid ContratoForm formBean,
             BindingResult result,
             ModelMap modelo,
             @RequestParam String action) {
 
         if (action.equals("Aceptar")) {
-
             if (result.hasErrors()) {
-
                 modelo.addAttribute("formBean", formBean);
-
                 return "contratosEditar";
             }
-
             try {
-
                 Contrato contrato = formBean.toPojo();
 
                 contrato.setPropietario(
-                        personaService.getPersonaById(
-                                formBean.getIdPropietario()));
-
+                        personaService.getPersonaById(formBean.getIdPropietario()));
                 contrato.setInquilino(
-                        personaService.getPersonaById(
-                                formBean.getIdInquilino()));
+                        personaService.getPersonaById(formBean.getIdInquilino()));
 
                 service.save(contrato);
-
                 return "redirect:/contratosBuscar";
-
             } catch (Excepcion e) {
-
-            	e.printStackTrace();
-
+                e.printStackTrace();
                 modelo.addAttribute("error", e.getMessage());
                 modelo.addAttribute("formBean", formBean);
-
                 return "contratosEditar";
             }
         }
-
         if (action.equals("Cancelar")) {
-
             modelo.clear();
-
             return "redirect:/contratosBuscar";
         }
-
         return "redirect:/";
     }
 }

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import tuti.desi.accesoDatos.IContratoRepo;
 import tuti.desi.accesoDatos.IHistorialEstadoContratoRepo;
 //import tuti.desi.accesoDatos.IPropiedadRepo;
-//import tuti.desi.entidades.EstadoPropiedad;
+import tuti.desi.entidades.EstadoPropiedad;
 import tuti.desi.entidades.HistorialEstadoContrato;
-//import tuti.desi.entidades.Propiedad;
+import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.EntidadNoEncontradaException;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.entidades.Contrato;
@@ -29,8 +29,8 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     @Autowired
     IHistorialEstadoContratoRepo historialRepo;
 
-    //@Autowired
-    //IPropiedadRepo propiedadRepo;
+   // @Autowired
+   // IPropiedadRepo propiedadRepo;
 
     @Override
     public List<Contrato> getAll() {
@@ -146,9 +146,8 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     }
 
    
-    //  activar un contrato
-
-    /* private void validarPuedeActivarse(Contrato contrato) throws Excepcion {
+    /*  activar un contrato
+     private void validarPuedeActivarse(Contrato contrato) throws Excepcion {
 
         Propiedad propiedad = contrato.getPropiedad();
 

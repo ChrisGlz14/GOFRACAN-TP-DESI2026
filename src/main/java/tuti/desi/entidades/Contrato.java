@@ -34,9 +34,9 @@ public class Contrato {
     @Column(name = "eliminado")
     private Boolean eliminado = false;
 
-    //@ManyToOne(optional = false)
-    //@JoinColumn(name = "propiedad_id", nullable = false)
-    //private Propiedad propiedad;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "propiedad_id", nullable = false)
+    private Propiedad propiedad;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "propietario_id", nullable = false)
@@ -77,8 +77,8 @@ public class Contrato {
     public Boolean getEliminado() { return eliminado; }
     public void setEliminado(Boolean eliminado) { this.eliminado = eliminado; }
 
-    //public Propiedad getPropiedad() { return propiedad; }
-    //public void setPropiedad(Propiedad propiedad) { this.propiedad = propiedad; }
+    public Propiedad getPropiedad() { return propiedad; }
+    public void setPropiedad(Propiedad propiedad) { this.propiedad = propiedad; }
 
     public Persona getPropietario() { return propietario; }
     public void setPropietario(Persona propietario) { this.propietario = propietario; }

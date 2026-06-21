@@ -16,7 +16,7 @@ public class ContratoForm {
 	private Long id;
 
 	//@NotNull(message = "La propiedad es obligatoria")
-	private Long idPropiedad;
+	//private Long idPropiedad;
 	
 	@NotNull(message = "El propietario es obligatorio")
 	private Long idPropietario; //NO estaba en la historia de usuario pero la agrego porque estaba en la BD
@@ -50,9 +50,9 @@ public class ContratoForm {
         this.id = contrato.getId();
     
         //this.idPropiedad =
-          //      contrato.getPropiedad() == null
+         //       contrato.getPropiedad() == null
          //       ? null
-          //      : contrato.getPropiedad().getId();
+         //       : contrato.getPropiedad().getId();
         
         this.idPropietario =
                 contrato.getPropietario() == null
@@ -80,11 +80,7 @@ public class ContratoForm {
         contrato.setDuracionMeses(duracionMeses);
         contrato.setImporteMensual(importeMensual);
         contrato.setDiaVencimientoMensual(diaVencimientoMensual);
-        contrato.setDescripcion(descripcion);
-        //contrato.setPropiedad(...)
-       // contrato.setPropietario(...)
-        //contrato.setInquilino(...)
-        
+        contrato.setDescripcion(descripcion);      
 
         return contrato;
     }
@@ -98,13 +94,13 @@ public class ContratoForm {
 		this.id = id;
 	}
 
-	public Long getIdPropiedad() {
-		return idPropiedad;
-	}
+//	public Long getIdPropiedad() {
+//		return idPropiedad;
+//	}
 
-	public void setIdPropiedad(Long idPropiedad) {
-		this.idPropiedad = idPropiedad;
-	}
+//	public void setIdPropiedad(Long idPropiedad) {
+//		this.idPropiedad = idPropiedad;
+//	}
 
 	public Long getIdInquilino() {
 		return idInquilino;
@@ -163,13 +159,3 @@ public class ContratoForm {
 	}
 
    }
-
-
-
-/*
-● Deberá guardarse registro de fechas de cada cambio de estado del
-contrato en un historial de estados (no es necesario que el mismo sea
-visible, pero sí que esté registrado en la base de datos. Idealmente
-también dejaríamos registro del usuario que hizo dicho cambio, pero
-obviaremos esto en el TP por simplicidad)
-*/

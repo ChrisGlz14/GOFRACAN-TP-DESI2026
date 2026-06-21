@@ -4,7 +4,7 @@ Este proyecto es un Trabajo Práctico desarrollado para la materia DESI (2026). 
 
 ## 🛠️ Tecnologías y Herramientas Utilizadas
 
-* **Lenguaje:** Java 11
+* **Lenguaje:** Java 17
 * **Framework:** Spring Boot
 * **Arquitectura:** MVC (Model-View-Controller)
 * **Gestor de Dependencias:** Apache Maven

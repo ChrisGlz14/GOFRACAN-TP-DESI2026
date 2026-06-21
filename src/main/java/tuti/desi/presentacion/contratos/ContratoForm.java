@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 import tuti.desi.entidades.Contrato;
+import tuti.desi.entidades.EstadoContrato;
 
 public class ContratoForm {
 	
@@ -42,6 +43,8 @@ public class ContratoForm {
     
     @Size(max = 500) 
     private String descripcion;
+    
+    private EstadoContrato estado;
 
     public ContratoForm() {
     }
@@ -69,6 +72,8 @@ public class ContratoForm {
         this.importeMensual = contrato.getImporteMensual();
         this.diaVencimientoMensual = contrato.getDiaVencimientoMensual();
         this.descripcion = contrato.getDescripcion();
+        this.estado = contrato.getEstado();
+        
     }
 
     public Contrato toPojo() {
@@ -80,8 +85,9 @@ public class ContratoForm {
         contrato.setDuracionMeses(duracionMeses);
         contrato.setImporteMensual(importeMensual);
         contrato.setDiaVencimientoMensual(diaVencimientoMensual);
-        contrato.setDescripcion(descripcion);      
-
+        contrato.setDescripcion(descripcion);
+        contrato.setEstado(estado);
+               
         return contrato;
     }
 
@@ -156,6 +162,13 @@ public class ContratoForm {
 
 	public void setIdPropietario(Long idPropietario) {
 		this.idPropietario = idPropietario;
+	}
+	public EstadoContrato getEstado() {
+	    return estado;
+	}
+
+	public void setEstado(EstadoContrato estado) {
+	    this.estado = estado;
 	}
 
    }

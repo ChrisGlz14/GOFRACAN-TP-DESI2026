@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import tuti.desi.entidades.Contrato;
+import tuti.desi.entidades.EstadoContrato;
 import tuti.desi.entidades.Persona;
 import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.Excepcion;
@@ -31,6 +32,7 @@ public class ContratoEditarController {
     
     @Autowired
     private PropiedadService propiedadService;
+    
 
     
     @RequestMapping(path = {"", "/{id}"}, method = RequestMethod.GET)
@@ -56,8 +58,13 @@ public class ContratoEditarController {
     public List<Propiedad> getAllPropiedades() {
     return propiedadService.obtenerTodas();
      }
+    
+    @ModelAttribute("allEstados")
+    public EstadoContrato[] getAllEstados() {
+        return EstadoContrato.values();
+    }
    
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(path = {"", "/{id}"}, method = RequestMethod.POST)
     public String submit(
             @ModelAttribute("formBean") @Valid ContratoForm formBean,
             BindingResult result,

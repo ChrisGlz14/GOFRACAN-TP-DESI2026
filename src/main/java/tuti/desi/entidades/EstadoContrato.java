@@ -6,5 +6,6 @@ public enum EstadoContrato {
 	borrador,
 	activo,
 	finalizado,
-	rescindido
+	rescindido;
+
 }

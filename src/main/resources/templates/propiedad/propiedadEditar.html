@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 
-<body>
+<body class="pagina-propiedad">
 	<div class="starter-template">
         <h1><span  th:text="#{empresa}" /></h1>
         <h2 th:text="${formBean.id} ? #{propiedad.editar.titulo}: #{propiedad.registrar.titulo}" />
@@ -16,6 +16,10 @@
 		<p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" />
 		<input type="hidden" id="id" th:field="*{id}">
 		<table border="0" style="align-self: center;">
+	        <tr th:if="${formBean.id}">
+	            <td><label th:text="#{propiedad.id}" /></td>
+	            <td><input type="text" th:value="${formBean.id}" readonly /></td>
+	        </tr>
 	        <tr>
 	            <td><label th:text="#{propiedad.direccion}" /></td>
 	            <td><input type="text" th:field="*{direccion}" /></td>

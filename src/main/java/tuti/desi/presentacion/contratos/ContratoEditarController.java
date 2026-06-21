@@ -17,6 +17,7 @@ import tuti.desi.entidades.Propiedad;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.servicios.ContratoServicio;
 import tuti.desi.servicios.PersonaService;
+import tuti.desi.servicios.PropiedadService;
 
 @Controller
 @RequestMapping("/contratosEditar")
@@ -27,6 +28,9 @@ public class ContratoEditarController {
 
     @Autowired
     private PersonaService personaService;
+    
+    @Autowired
+    private PropiedadService propiedadService;
 
     
     @RequestMapping(path = {"", "/{id}"}, method = RequestMethod.GET)
@@ -48,7 +52,10 @@ public class ContratoEditarController {
     public List<Persona> getAllPersonas() {
         return personaService.getAll();
     }
-
+    @ModelAttribute("allPropiedades")
+    public List<Propiedad> getAllPropiedades() {
+    return propiedadService.obtenerTodas();
+     }
    
     @RequestMapping(method = RequestMethod.POST)
     public String submit(
@@ -65,6 +72,8 @@ public class ContratoEditarController {
             try {
                 Contrato contrato = formBean.toPojo();
 
+                contrato.setPropiedad(
+                        propiedadService.buscarPorId(formBean.getIdPropiedad()));
                 contrato.setPropietario(
                         personaService.getPersonaById(formBean.getIdPropietario()));
                 contrato.setInquilino(

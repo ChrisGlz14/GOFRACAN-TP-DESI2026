@@ -15,8 +15,8 @@ public class ContratoForm {
 	
 	private Long id;
 
-	//@NotNull(message = "La propiedad es obligatoria")
-	//private Long idPropiedad;
+	@NotNull(message = "La propiedad es obligatoria")
+	private Long idPropiedad;
 	
 	@NotNull(message = "El propietario es obligatorio")
 	private Long idPropietario; //NO estaba en la historia de usuario pero la agrego porque estaba en la BD
@@ -49,10 +49,10 @@ public class ContratoForm {
     public ContratoForm(Contrato contrato) {
         this.id = contrato.getId();
     
-        //this.idPropiedad =
-         //       contrato.getPropiedad() == null
-         //       ? null
-         //       : contrato.getPropiedad().getId();
+        this.idPropiedad =
+                contrato.getPropiedad() == null
+                ? null
+                : contrato.getPropiedad().getId();
         
         this.idPropietario =
                 contrato.getPropietario() == null
@@ -94,13 +94,13 @@ public class ContratoForm {
 		this.id = id;
 	}
 
-//	public Long getIdPropiedad() {
-//		return idPropiedad;
-//	}
+	public Long getIdPropiedad() {
+		return idPropiedad;
+	}
 
-//	public void setIdPropiedad(Long idPropiedad) {
-//		this.idPropiedad = idPropiedad;
-//	}
+	public void setIdPropiedad(Long idPropiedad) {
+		this.idPropiedad = idPropiedad;
+	}
 
 	public Long getIdInquilino() {
 		return idInquilino;

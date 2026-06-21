@@ -16,16 +16,16 @@
 
     <input type="hidden" th:field="*{id}" />
 	
-	<!--Propiedad:
+	Propiedad:
 	<select th:field="*{idPropiedad}">
 	    <option value="">Seleccione...</option>
 	    <option th:each="p : ${allPropiedades}" 
 	            th:value="${p.id}"
-	            th:text="${p.direccion + ' - ' + p.ciudad.nombre + ' (' + p.estadoDisponibilidad + ')'}">
+	            th:text="${p.direccion + ' - ' + p.ciudad.nombre + ' (' + p.estado + ')'}">
 	    </option>
 	</select>
 	<span th:if="${#fields.hasErrors('idPropiedad')}" th:errors="*{idPropiedad}" style="color:red;"></span>
-	<br><br>-->
+	<br><br>
     
 	Propietario:
 	<select th:field="*{idPropietario}">

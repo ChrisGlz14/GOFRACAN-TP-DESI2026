@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:text="#{propiedad.buscar.titulo}"></span></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body class="pagina-propiedad">
+
+	<div class="starter-template">
+        <h1><span  th:text="#{empresa}" /></h1>
+        <h2>
+            <span th:text="#{propiedad.buscar.titulo}"></span>
+        </h2>
+    </div>
+
+	<p th:if="${mensajeError}" th:text="${mensajeError}" class="error" />
+	<p th:if="${mensajeOk}" th:text="${mensajeOk}" />
+
+	<form  th:action="@{/propiedadBuscar}" th:object="${formBean}" method="post">
+		<table border="1" style="align-self: center;">
+	        <tr>
+	            <td><label th:text="#{propiedad.direccion}" /></td>
+	            <td><input type="text" th:field="*{direccion}" /></td>
+			</tr>
+	        <tr>
+	            <td><label th:text="#{propiedad.ciudad}" /></td>
+	            <td>
+			        <select th:field="*{ciudadSeleccionada}">
+					  <option value="">Todas</option>
+					  <option th:each="c : ${allCiudades}" th:value="${c.id}" th:text="${c.nombre}"></option>
+					</select>
+				</td>
+			</tr>
+	        <tr>
+	            <td><label th:text="#{propiedad.tipo}" /></td>
+	            <td>
+			        <select th:field="*{tipo}">
+					  <option value="">Todos</option>
+					  <option th:each="t : ${allTipos}" th:value="${t}" th:text="${t}"></option>
+					</select>
+				</td>
+			</tr>
+	        <tr>
+	            <td><label th:text="#{propiedad.estado}" /></td>
+	            <td>
+			        <select th:field="*{estado}">
+					  <option value="">Todos</option>
+					  <option th:each="e : ${allEstados}" th:value="${e}" th:text="${e}"></option>
+					</select>
+				</td>
+			</tr>
+	  </table>
+	  <table class="botones">
+	      <tr>
+		      <td><button type="submit" name="action" value="actionBuscar" th:text="#{botones.buscar}"/></td>
+		      <td><button type="submit" name="action" value="actionCancelar" th:text="#{botones.cancelar}"/></td>
+		      <td><button type="submit" name="action" value="actionRegistrar" th:text="#{botones.registrar}"/></td>
+	      </tr>
+	   </table>
+	   <table  class="resultados" border="0" style="align-self: center;">
+		    <thead>
+		      <tr>
+		        <th><label th:text="#{propiedad.id}" /></th>
+		        <th><label th:text="#{propiedad.direccion}" /></th>
+		        <th><label th:text="#{propiedad.ciudad}" /></th>
+		        <th><label th:text="#{propiedad.tipo}" /></th>
+		        <th><label th:text="#{propiedad.cantidadAmbientes}" /></th>
+		        <th><label th:text="#{propiedad.metrosCuadrados}" /></th>
+		        <th><label th:text="#{propiedad.estado}" /></th>
+		        <th><label th:text="#{propiedad.propietario}" /></th>
+		        <th></th>
+		        <th></th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr th:each="p : ${resultados}">
+				    <td th:text="${p.id}"></td>
+				    <td th:text="${p.direccion}"></td>
+				    <td th:text="${p.ciudad == null ? '' : p.ciudad.nombre}"></td>
+				    <td th:text="${p.tipo}"></td>
+				    <td th:text="${p.cantidadAmbientes}"></td>
+				    <td th:text="${p.metrosCuadrados}"></td>
+				    <td th:text="${p.estado}"></td>
+				    <td th:text="${p.propietario == null ? '' : p.propietario.apellido + ', ' + p.propietario.nombre}"></td>
+			        <td>
+	                    <a th:href="@{/propiedadEditar/{id}(id=${p.id})}"
+	                    	class="btn btn-primary"
+	                    	th:text="#{links.editar}" >
+	                    </a>
+	                </td>
+	                <td>
+	                    <button type="submit"
+                            th:formaction="@{/propiedadEditar/delete/{id}(id=${p.id})}"
+                            formmethod="post"
+	                    	class="btn btn-primary"
+	                    	th:text="#{links.eliminar}"
+	                    	onclick="return confirm('¿Estás seguro que deseas eliminar esta propiedad?');"
+	                    	>
+	                    </button>
+	                </td>
+		      </tr>
+		    </tbody>
+	    </table>
+	</form>
+</body>
+</html>

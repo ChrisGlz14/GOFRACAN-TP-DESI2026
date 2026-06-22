@@ -30,7 +30,7 @@ public class ProvinciasBuscarController {
     public String preparaForm(Model modelo) {
     	ProvinciasBuscarForm form =  new ProvinciasBuscarForm();
        modelo.addAttribute("formBean",form);
-       return "provinciasBuscar";
+       return "provincia/provinciasBuscar";
     }
      
     
@@ -51,7 +51,7 @@ public class ProvinciasBuscarController {
 			}
     		
     		modelo.addAttribute("formBean",formBean);
-        	return "provinciasBuscar";
+        	return "provincia/provinciasBuscar";
     	}
     	else if(action.equals("actionCancelar"))
     	{

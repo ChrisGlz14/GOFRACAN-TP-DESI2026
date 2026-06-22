@@ -30,7 +30,7 @@ public class PersonasBuscarController {
     	PersonasBuscarForm form =  new PersonasBuscarForm();
 //   	form.setCiudades(serviceCiudad.getAll());    //  en lugar de esto hacemos @ModelAttribute("allCiudades")
     	modelo.addAttribute("formBean",form);
-        return "personasBuscar";
+        return "persona/personasBuscar";
     }
 
     @ModelAttribute("allCiudades")
@@ -50,7 +50,7 @@ public class PersonasBuscarController {
     		
         	modelo.addAttribute("formBean",formBean);
         	modelo.addAttribute("resultados",personas);
-        	return "personasBuscar";
+        	return "persona/personasBuscar";
     	}
     
     	

@@ -43,7 +43,7 @@ public class ProvinciaServiceImpl implements ProvinciaService {
 	@Override
 	public List<Provincia> filter(ProvinciasBuscarForm filter) throws Excepcion
 	{
-		//ver https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/jpa.repositories.html
+		
 		if(filter.getNombre()==null)
 			return repo.findAll();
 		else
@@ -55,7 +55,7 @@ public class ProvinciaServiceImpl implements ProvinciaService {
 	public void save(Provincia p) throws Excepcion {
 		if(p.getId()==null)
 		{ 
-			//si llegó aquí es porque estoy registrando una nueva provincia 
+			//si llego aca es porque estoy registrando una nueva provincia 
 			if(!repo.findByNombre(p.getNombre()).isEmpty()) 
 				throw new Excepcion("Ya existe una provincia con el mismo nombre");  
 			else
@@ -63,8 +63,8 @@ public class ProvinciaServiceImpl implements ProvinciaService {
 		}
 		else
 		{
-			//si llegó aquí es porque estoy editando una provincia existente
-			if(!repo.findByNombreAndIdNot(p.getNombre(),p.getId()).isEmpty())  //tengo que validar que no exista otra provincia (in id diferente), con el mismo nombre
+			//si llego aca es porque estoy editando una provincia que ya existe
+			if(!repo.findByNombreAndIdNot(p.getNombre(),p.getId()).isEmpty())  //tengo que validar que no exista otra provincia (in id diferente)
 				throw new Excepcion("Existe otra provincia con el mismo nombre");
 			else
 				repo.save(p);

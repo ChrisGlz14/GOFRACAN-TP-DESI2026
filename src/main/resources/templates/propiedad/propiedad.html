@@ -1,0 +1,14 @@
+<!DOCTYPE html> 
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:text="#{propiedad}"></span></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+    <div class="starter-template">
+        <h1><span th:text="#{empresa}"></span></h1>
+        <h2 th:text="${formBean.id} ? #{propiedad.editar.titulo} : #{propiedad.registrar.titulo}"></h2>
+    </div>
+</body>
+</html>

@@ -1,66 +1,93 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Listado de Contratos</title>
+    <title>Listado de Contratos</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
-<body>
+<body class="pagina-propiedad">
 
-<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+    <div class="starter-template">
+        <h1>Inmobiliaria</h1>
+        <h2>Listado de Contratos</h2>
+    </div>
 
-<div style="margin-bottom: 20px;">
-    <a th:href="@{/contratosEditar}" class="btn-nuevo">➕ Nuevo Contrato</a>
-</div>
+    <p th:if="${error}" th:text="${error}" class="error"></p>
 
-<form method="get" th:action="@{/contratosBuscar}" style="margin-bottom:20px;">
-    Inquilino:
-    <select name="idInquilino">
-        <option value="">Todos</option>
-        <option th:each="p : ${allPersonas}" th:value="${p.id}"
-                th:selected="${p.id == idInquilino}"
-                th:text="${p.nombre + ' ' + p.apellido}"></option>
-    </select>
+    <form method="get" th:action="@{/contratosBuscar}">
+        <table border="0" style="align-self: center;">
+            <tr>
+                <td><label>Inquilino</label></td>
+                <td>
+                    <select name="idInquilino">
+                        <option value="">Todos</option>
+                        <option th:each="p : ${allPersonas}" th:value="${p.id}"
+                                th:selected="${p.id == idInquilino}"
+                                th:text="${p.apellido + ', ' + p.nombre}"></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Estado</label></td>
+                <td>
+                    <select name="estado">
+                        <option value="">Todos</option>
+                        <option th:each="e : ${allEstados}" th:value="${e}"
+                                th:selected="${e == estado}" th:text="${e}"></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Desde fecha de inicio</label></td>
+                <td><input type="date" name="fechaInicioDesde" th:value="${fechaInicioDesde}" /></td>
+            </tr>
+        </table>
 
-    Estado:
-    <select name="estado">
-        <option value="">Todos</option>
-        <option th:each="e : ${allEstados}" th:value="${e}"
-                th:selected="${e == estado}" th:text="${e}"></option>
-    </select>
+        <table class="botones">
+            <tr>
+                <td><button type="submit">Buscar</button></td>
+                <td><a th:href="@{/contratosBuscar}" class="btn btn-primary">Limpiar</a></td>
+                <td><a th:href="@{/contratosEditar}" class="btn btn-primary">Nuevo Contrato</a></td>
+            </tr>
+        </table>
+    </form>
 
-    Desde fecha de inicio:
-    <input type="date" name="fechaInicioDesde" th:value="${fechaInicioDesde}" />
-
-    <button type="submit">Filtrar</button>
-    <a th:href="@{/contratosBuscar}">Limpiar</a>
-</form>
-
-<table border="1" style="width: 100%; border-collapse: collapse;">
-    <thead>
-        <tr style="background-color: #f2f2f2;">
-            <th>ID</th><th>Propiedad</th><th>Propietario</th><th>Inquilino</th>
-            <th>Fecha Inicio</th><th>Importe Mensual</th><th>Día Vencimiento</th>
-            <th>Estado</th><th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="contrato : ${contratos}">
-            <td th:text="${contrato.id}"></td>
-            <td>(pendiente)</td>
-            <td th:text="${contrato.propietario.apellido + ', ' + contrato.propietario.nombre}"></td>
-            <td th:text="${contrato.inquilino.apellido + ', ' + contrato.inquilino.nombre}"></td>
-            <td th:text="${contrato.fechaInicio}"></td>
-            <td th:text="${contrato.importeMensual}"></td>
-            <td th:text="${contrato.diaVencimientoMensual}"></td>
-            <td th:text="${contrato.estado}"></td>
-            <td>
-                <a th:href="@{/contratosEditar/{id}(id=${contrato.id})}">✏️ Editar</a> |
-                <a th:href="@{/contratosEliminar/{id}(id=${contrato.id})}"
-                   onclick="return confirm('¿Seguro que desea eliminar este contrato?');">🗑 Eliminar</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <table class="resultados" border="0" style="align-self: center;">
+        <thead>
+            <tr>
+                <th><label>ID</label></th>
+                <th><label>Propiedad</label></th>
+                <th><label>Propietario</label></th>
+                <th><label>Inquilino</label></th>
+                <th><label>Fecha Inicio</label></th>
+                <th><label>Importe Mensual</label></th>
+                <th><label>Día Vencimiento</label></th>
+                <th><label>Estado</label></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="contrato : ${contratos}">
+                <td th:text="${contrato.id}"></td>
+                <td th:text="${contrato.propiedad.direccion}"></td>
+                <td th:text="${contrato.propietario.apellido + ', ' + contrato.propietario.nombre}"></td>
+                <td th:text="${contrato.inquilino.apellido + ', ' + contrato.inquilino.nombre}"></td>
+                <td th:text="${contrato.fechaInicio}"></td>
+                <td th:text="${contrato.importeMensual}"></td>
+                <td th:text="${contrato.diaVencimientoMensual}"></td>
+                <td th:text="${contrato.estado}"></td>
+                <td>
+                    <a th:href="@{/contratosEditar/{id}(id=${contrato.id})}" class="btn btn-primary">Editar</a>
+                </td>
+                <td>
+                    <a th:href="@{/contratosEliminar/{id}(id=${contrato.id})}"
+                       class="btn btn-primary"
+                       onclick="return confirm('¿Seguro que desea eliminar este contrato?');">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 </body>
 </html>

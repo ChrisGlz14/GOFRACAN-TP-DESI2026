@@ -1,5 +1,3 @@
-//aca van los metodos y los mensajes de error
-
 package tuti.desi.servicios;
 
 import java.time.LocalDate;
@@ -9,9 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import tuti.desi.accesoDatos.IContratoRepo;
 import tuti.desi.accesoDatos.IHistorialEstadoContratoRepo;
-import tuti.desi.accesoDatos.IPropiedadRepo;
 import tuti.desi.entidades.EstadoPropiedad;
 import tuti.desi.entidades.HistorialEstadoContrato;
 import tuti.desi.entidades.Propiedad;
@@ -30,7 +28,7 @@ public class ContratoServicioImplementacion implements ContratoServicio {
     IHistorialEstadoContratoRepo historialRepo;
 
     @Autowired
-    IPropiedadRepo propiedadRepo;
+    PropiedadService propiedadService;
 
     @Override
     public List<Contrato> getAll() {
@@ -57,11 +55,9 @@ public class ContratoServicioImplementacion implements ContratoServicio {
                 || contrato.getDiaVencimientoMensual() > 31) {
             throw new Excepcion("El día de vencimiento debe estar entre 1 y 31");
         }
-        if (contrato.getPropiedad() == null) {
-            throw new Excepcion("Debe seleccionar una propiedad");
-        }
 
         boolean esAlta = (contrato.getId() == null);
+
         if (esAlta) {
             altaContrato(contrato);
         } else {
@@ -69,17 +65,13 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         }
     }
 
-
     // ALTA
     private void altaContrato(Contrato contrato) {
-
         contrato.setEstado(EstadoContrato.borrador);
         repo.save(contrato);
-
         registrarHistorial(contrato, EstadoContrato.borrador);
     }
 
- 
     // MODIFICACIÓN
     private void modificarContrato(Contrato contratoNuevo) throws Excepcion {
 
@@ -90,15 +82,13 @@ public class ContratoServicioImplementacion implements ContratoServicio {
 
         validarTransicion(estadoActual, estadoNuevo);
 
-        //validar disponibilidad de la propiedad
         boolean seActiva = (estadoActual != EstadoContrato.activo
                 && estadoNuevo == EstadoContrato.activo);
 
-         if (seActiva) {
-             validarPuedeActivarse(contratoNuevo);
-         }
+        if (seActiva) {
+            validarPuedeActivarse(contratoNuevo);
+        }
 
-        //guardar los cambios 
         contratoActual.setFechaInicio(contratoNuevo.getFechaInicio());
         contratoActual.setDuracionMeses(contratoNuevo.getDuracionMeses());
         contratoActual.setImporteMensual(contratoNuevo.getImporteMensual());
@@ -106,19 +96,18 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         contratoActual.setDescripcion(contratoNuevo.getDescripcion());
         contratoActual.setPropietario(contratoNuevo.getPropietario());
         contratoActual.setInquilino(contratoNuevo.getInquilino());
+        contratoActual.setPropiedad(contratoNuevo.getPropiedad());
         contratoActual.setEstado(estadoNuevo);
 
         repo.save(contratoActual);
 
-        //actualizar historial
         if (estadoActual != estadoNuevo) {
             registrarHistorial(contratoActual, estadoNuevo);
             actualizarEstadoPropiedadSegunContrato(contratoActual, estadoActual, estadoNuevo);
         }
     }
 
-
-      private void validarTransicion(EstadoContrato actual, EstadoContrato nuevo) throws Excepcion {
+    private void validarTransicion(EstadoContrato actual, EstadoContrato nuevo) throws Excepcion {
 
         if (actual == nuevo) {
             return;
@@ -137,20 +126,17 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         }
     }
 
-     //FALTA ESTE METODO!!!!!!!!!!!!!
-      //activar un contrato
-     /*private void validarPuedeActivarse(Contrato contrato) throws Excepcion {
+    // Activar un contrato
+    private void validarPuedeActivarse(Contrato contrato) throws Excepcion {
 
         Propiedad propiedad = contrato.getPropiedad();
 
-        // no se puede activar un contrato si la propiedad no esta disponible.
         if (propiedad.getEstado() != EstadoPropiedad.DISPONIBLE) {
             throw new Excepcion(
                 "No se puede activar el contrato: la propiedad no está disponible "
                 + "(estado actual: " + propiedad.getEstado() + ")");
         }
 
-        // una propiedad no puede tener mas de un contrato activo.
         Optional<Contrato> otroActivo = repo.findByPropiedad_IdAndEstadoAndEliminadoFalse(
                 propiedad.getId(), EstadoContrato.activo);
 
@@ -158,52 +144,47 @@ public class ContratoServicioImplementacion implements ContratoServicio {
             throw new Excepcion(
                 "La propiedad ya tiene un contrato activo (id " + otroActivo.get().getId() + ")");
         }
-    }*/
+    }
 
-    
     private void actualizarEstadoPropiedadSegunContrato(
-            Contrato contrato, EstadoContrato estadoViejo, EstadoContrato estadoNuevo) {
+            Contrato contrato, EstadoContrato estadoViejo, EstadoContrato estadoNuevo) throws Excepcion {
 
         Propiedad propiedad = contrato.getPropiedad();
 
         if (estadoNuevo == EstadoContrato.activo) {
-            // Al activarse --> la propiedad pasa a ALQUILADA
             propiedad.setEstado(EstadoPropiedad.ALQUILADA);
-            propiedadRepo.save(propiedad);
+            propiedadService.guardar(propiedad);
 
         } else if (estadoViejo == EstadoContrato.activo
                 && (estadoNuevo == EstadoContrato.finalizado
                     || estadoNuevo == EstadoContrato.rescindido)) {
-            // Al finalizar/rescindir --> la propiedad puede volver a DISPONIBLE.
             propiedad.setEstado(EstadoPropiedad.DISPONIBLE);
-            propiedadRepo.save(propiedad);
+            propiedadService.guardar(propiedad);
         }
     }
 
-
-    //historial de estados
+    // Historial de estados
     private void registrarHistorial(Contrato contrato, EstadoContrato estado) {
         HistorialEstadoContrato registro = new HistorialEstadoContrato(contrato, estado);
         historialRepo.save(registro);
     }
 
-
-    // BAJA  
+    // BAJA
     @Override
     public void deleteById(Long id) throws Excepcion {
         Contrato contrato = getById(id);
 
-        // unicamente se pueden eliminar contratos en estado borrado
         if (contrato.getEstado() != EstadoContrato.borrador) {
             throw new Excepcion(
                 "No se puede eliminar el contrato: solo se permite eliminar "
                 + "contratos en estado 'borrador' (estado actual: "
                 + contrato.getEstado() + ")");
         }
+
         contrato.setEliminado(true);
         repo.save(contrato);
     }
-    
+
     @Override
     public List<Contrato> buscar(Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde) {
 
@@ -224,5 +205,11 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         }
 
         return resultado;
+    }
+
+    @Override
+    public boolean tieneContratoActivo(Long idPropiedad) {
+        return repo.findByPropiedad_IdAndEstadoAndEliminadoFalse(idPropiedad, EstadoContrato.activo)
+                .isPresent();
     }
 }

@@ -17,4 +17,5 @@ public interface IContratoRepo extends JpaRepository<Contrato, Long>,
     @Query("SELECT c FROM Contrato c WHERE c.eliminado = FALSE")
     List<Contrato> findByEliminadoFalse();
     List<Contrato> findByEstadoAndEliminadoFalse(EstadoContrato estado);
+
 }

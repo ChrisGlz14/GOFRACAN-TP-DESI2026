@@ -33,8 +33,6 @@ public class ContratoEditarController {
     @Autowired
     private PropiedadService propiedadService;
     
-
-    
     @RequestMapping(path = {"", "/{id}"}, method = RequestMethod.GET)
     public String preparaForm(Model modelo,
                               @PathVariable("id") Optional<Long> id) {
@@ -47,7 +45,7 @@ public class ContratoEditarController {
             modelo.addAttribute("formBean", new ContratoForm());
             modelo.addAttribute("esAlta", true);
         }
-        return "contratosEditar";
+        return "contrato/contratosEditar";
     }
 
     @ModelAttribute("allPersonas")
@@ -74,7 +72,8 @@ public class ContratoEditarController {
         if (action.equals("Aceptar")) {
             if (result.hasErrors()) {
                 modelo.addAttribute("formBean", formBean);
-                return "contratosEditar";
+                modelo.addAttribute("esAlta", formBean.getId() == null);
+                return "contrato/contratosEditar";
             }
             try {
                 Contrato contrato = formBean.toPojo();
@@ -92,7 +91,8 @@ public class ContratoEditarController {
                 e.printStackTrace();
                 modelo.addAttribute("error", e.getMessage());
                 modelo.addAttribute("formBean", formBean);
-                return "contratosEditar";
+                modelo.addAttribute("esAlta", formBean.getId() == null);
+                return "contrato/contratosEditar";
             }
         }
         if (action.equals("Cancelar")) {

@@ -36,7 +36,7 @@ public class ContratoBuscarController {
         model.addAttribute("estado", estado);
         model.addAttribute("fechaInicioDesde", fechaInicioDesde);
 
-        return "contratosBuscar";
+        return "contrato/contratosBuscar";
     }
 }
 

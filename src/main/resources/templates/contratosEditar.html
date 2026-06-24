@@ -3,94 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <title>Contrato</title>
+<link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
-<body>
+<body class="pagina">
 
-<h1>Contrato</h1>
+<div class="starter-template">
+    <h1>HogarYa</h1>
+    <h2>Contrato</h2>
+</div>
 
- <p th:if="${error}"
-   th:text="${error}">
-</p> 
+<p th:if="${error}" th:text="${error}" class="error"></p>
 
-<form th:object="${formBean}" method="post">
+<form th:object="${formBean}" method="post" class="form-card">
 
     <input type="hidden" th:field="*{id}" />
-	
-	Propiedad:
-	<select th:field="*{idPropiedad}">
-	    <option value="">Seleccione...</option>
-	    <option th:each="p : ${allPropiedades}" 
-	            th:value="${p.id}"
-	            th:text="${p.direccion + ' - ' + p.ciudad.nombre + ' (' + p.estado + ')'}">
-	    </option>
-	</select>
-	<span th:if="${#fields.hasErrors('idPropiedad')}" th:errors="*{idPropiedad}" style="color:red;"></span>
-	<br><br>
-    
-	Propietario:
-	<select th:field="*{idPropietario}">
-	<option value="">Seleccione...</option>
-	<option th:each="p : ${allPersonas}"
-	        th:value="${p.id}"
-	        th:text="${p.nombre + ' ' + p.apellido}">
-	</option>
-	</select>
-	<span th:if="${#fields.hasErrors('idPropietario')}" th:errors="*{idPropietario}" style="color:red;"></span>
-	<br><br>
-	
-	Inquilino:
-	<select th:field="*{idInquilino}">
-    <option value="">Seleccione...</option>
-    <option th:each="p : ${allPersonas}"
-            th:value="${p.id}"
-            th:text="${p.nombre + ' ' + p.apellido}">
-    </option>
+
+    <label>Propiedad:</label>
+    <select th:field="*{idPropiedad}">
+        <option value="">Seleccione...</option>
+        <option th:each="p : ${allPropiedades}"
+                th:value="${p.id}"
+                th:text="${p.direccion + ' - ' + p.ciudad.nombre + ' (' + p.estado + ')'}">
+        </option>
     </select>
-	<span th:if="${#fields.hasErrors('idInquilino')}" th:errors="*{idInquilino}" style="color:red;"></span>
-	<br><br>
-	
-    Fecha Inicio:
-	<input type="date" th:field="*{fechaInicio}" />
-	<span th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}" style="color:red;"></span>
-	<br><br>
+    <span th:if="${#fields.hasErrors('idPropiedad')}" th:errors="*{idPropiedad}" class="error"></span>
+    <br>
 
-	Duración:
-	<input type="number" th:field="*{duracionMeses}" />
-	<span th:if="${#fields.hasErrors('duracionMeses')}" th:errors="*{duracionMeses}" style="color:red;"></span>
-	<br><br>
+    <label>Propietario:</label>
+    <select th:field="*{idPropietario}">
+        <option value="">Seleccione...</option>
+        <option th:each="p : ${allPersonas}"
+                th:value="${p.id}"
+                th:text="${p.nombre + ' ' + p.apellido}">
+        </option>
+    </select>
+    <span th:if="${#fields.hasErrors('idPropietario')}" th:errors="*{idPropietario}" class="error"></span>
+    <br>
 
-	Importe:
-	<input type="number" step="0.01" th:field="*{importeMensual}" />
-	<span th:if="${#fields.hasErrors('importeMensual')}" th:errors="*{importeMensual}" style="color:red;"></span>
-	<br><br>
+    <label>Inquilino:</label>
+    <select th:field="*{idInquilino}">
+        <option value="">Seleccione...</option>
+        <option th:each="p : ${allPersonas}"
+                th:value="${p.id}"
+                th:text="${p.nombre + ' ' + p.apellido}">
+        </option>
+    </select>
+    <span th:if="${#fields.hasErrors('idInquilino')}" th:errors="*{idInquilino}" class="error"></span>
+    <br>
 
-	Día Vencimiento:
-	<input type="number" th:field="*{diaVencimientoMensual}" />
-	<span th:if="${#fields.hasErrors('diaVencimientoMensual')}" th:errors="*{diaVencimientoMensual}" style="color:red;"></span>
-	<br><br>
-	
-	Descripción:
-	<textarea th:field="*{descripcion}"></textarea>
-	<span th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}" style="color:red;"></span>
-	<br><br>
+    <label>Fecha Inicio:</label>
+    <input type="date" th:field="*{fechaInicio}" />
+    <span th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}" class="error"></span>
+    <br>
 
-	<button type="submit" name="action" value="Aceptar">Guardar</button>
-	<button type="submit" name="action" value="Cancelar">Cancelar</button>
-	
-	
-	<div th:if="${!esAlta}">
-	    Estado:
-	    <select th:field="*{estado}">
-	        <option th:each="e : ${allEstados}"
-	                th:value="${e}"
-	                th:text="${e}">
-	        </option>
-	    </select>
-	    <span th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}" style="color:rgb(128, 0, 255);"></span>
-	    <br><br>
-	</div>
+    <label>Duración:</label>
+    <input type="number" th:field="*{duracionMeses}" />
+    <span th:if="${#fields.hasErrors('duracionMeses')}" th:errors="*{duracionMeses}" class="error"></span>
+    <br>
 
-	</form>
+    <label>Importe:</label>
+    <input type="number" step="0.01" th:field="*{importeMensual}" />
+    <span th:if="${#fields.hasErrors('importeMensual')}" th:errors="*{importeMensual}" class="error"></span>
+    <br>
+
+    <label>Día Vencimiento:</label>
+    <input type="number" th:field="*{diaVencimientoMensual}" />
+    <span th:if="${#fields.hasErrors('diaVencimientoMensual')}" th:errors="*{diaVencimientoMensual}" class="error"></span>
+    <br>
+
+    <label>Descripción:</label>
+    <textarea th:field="*{descripcion}"></textarea>
+    <span th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}" class="error"></span>
+    <br>
+
+    <div th:if="${!esAlta}">
+        <label>Estado:</label>
+        <select th:field="*{estado}">
+            <option th:each="e : ${allEstados}"
+                    th:value="${e}"
+                    th:text="${e}">
+            </option>
+        </select>
+        <span th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}" class="error"></span>
+        <br>
+    </div>
+
+    <button type="submit" name="action" value="Aceptar">Guardar</button>
+    <button type="submit" name="action" value="Cancelar">Cancelar</button>
+
+</form>
 
 </body>
 </html>

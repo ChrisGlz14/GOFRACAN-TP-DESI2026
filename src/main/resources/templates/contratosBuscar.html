@@ -3,41 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <title>Listado de Contratos</title>
+<link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
-<body>
+<body class="pagina">
 
-<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+<div class="starter-template">
+    <h1>HogarYa</h1>
+    <h2>Listado de Contratos</h2>
+</div>
 
-<div style="margin-bottom: 20px;">
+<p th:if="${error}" th:text="${error}" class="error"></p>
+
+<div style="text-align: center; margin-bottom: 20px;">
     <a th:href="@{/contratosEditar}" class="btn-nuevo">➕ Nuevo Contrato</a>
 </div>
 
-<form method="get" th:action="@{/contratosBuscar}" style="margin-bottom:20px;">
-    Inquilino:
+<form method="get" th:action="@{/contratosBuscar}" class="form-card">
+    <label>Inquilino:</label>
     <select name="idInquilino">
         <option value="">Todos</option>
         <option th:each="p : ${allPersonas}" th:value="${p.id}"
                 th:selected="${p.id == idInquilino}"
                 th:text="${p.nombre + ' ' + p.apellido}"></option>
     </select>
+    <br>
 
-    Estado:
+    <label>Estado:</label>
     <select name="estado">
         <option value="">Todos</option>
         <option th:each="e : ${allEstados}" th:value="${e}"
                 th:selected="${e == estado}" th:text="${e}"></option>
     </select>
+    <br>
 
-    Desde fecha de inicio:
+    <label>Desde fecha de inicio:</label>
     <input type="date" name="fechaInicioDesde" th:value="${fechaInicioDesde}" />
+    <br>
 
     <button type="submit">Filtrar</button>
-    <a th:href="@{/contratosBuscar}">Limpiar</a>
+    <a th:href="@{/contratosBuscar}" class="btn-nuevo">Limpiar</a>
 </form>
 
-<table border="1" style="width: 100%; border-collapse: collapse;">
+<table class="resultados">
     <thead>
-        <tr style="background-color: #f2f2f2;">
+        <tr>
             <th>ID</th><th>Propiedad</th><th>Propietario</th><th>Inquilino</th>
             <th>Fecha Inicio</th><th>Importe Mensual</th><th>Día Vencimiento</th>
             <th>Estado</th><th>Acciones</th>
@@ -54,8 +63,9 @@
             <td th:text="${contrato.diaVencimientoMensual}"></td>
             <td th:text="${contrato.estado}"></td>
             <td>
-                <a th:href="@{/contratosEditar/{id}(id=${contrato.id})}">✏️ Editar</a> |
+                <a th:href="@{/contratosEditar/{id}(id=${contrato.id})}" class="btn">✏️ Editar</a>
                 <a th:href="@{/contratosEliminar/{id}(id=${contrato.id})}"
+                   class="btn"
                    onclick="return confirm('¿Seguro que desea eliminar este contrato?');">🗑 Eliminar</a>
             </td>
         </tr>

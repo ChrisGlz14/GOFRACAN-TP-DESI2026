@@ -1,10 +1,62 @@
 
 body {
-  padding-top: 5rem;
+  padding-top: 0;
 }
 .starter-template {
-  padding: 3rem 1.5rem;
+  padding: 2rem 1.5rem 1rem;
   text-align: center;
+}
+
+.starter-template h2 {
+  display: inline-block;
+  color: #146c5a;
+  font-family: "Georgia", "Segoe UI", serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.6rem;
+  position: relative;
+}
+
+.starter-template h2::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 3px;
+  border-radius: 3px;
+  background-color: #146c5a;
+}
+
+/* Banner principal */
+.banner {
+  background-image: linear-gradient(135deg, rgba(15, 76, 58, 0.55) 0%, rgba(20, 108, 90, 0.5) 100%),
+                    url("/img/imgBanner.webp");
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  text-align: center;
+  padding: 8rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.banner-titulo {
+  color: #ffffff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.banner-slogan {
+  font-size: 1.2rem;
+  font-weight: 300;
+  margin: 0.5rem 0 0;
+  opacity: 0.95;
 }
 
 h1{
@@ -73,7 +125,7 @@ float: left;
 
 .menu a {
   text-decoration: none;
-  background-color: #007bff;
+  background-color: #146c5a;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -85,39 +137,222 @@ float: left;
 }
 
 .menu a:hover {
-  background-color: #0056b3;
-  transform: scale(1.02);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.08);
 }
 
+/* Cada botón con su tono dentro de la misma paleta */
+.btn-provincias  { background-color: #1565c0; }
+.btn-ciudades    { background-color: #0277bd; }
+.btn-personas    { background-color: #00838f; }
+.btn-contratos   { background-color: #2e7d32; }
+.btn-propiedades { background-color: #00695c; }
 
-/* estilos de las pantallas de propiedad */
-.pagina-propiedad {
-  background-color: #eaf4ff;
+
+/* estilos compartidos de las pantallas internas */
+.pagina {
+  background-color: #eef6f3;
+  font-family: "Segoe UI", Arial, sans-serif;
+  padding-top: 1rem;
 }
 
-.pagina-propiedad h2 {
+.pagina h1 {
+  color: #146c5a;
   text-align: center;
+  margin-bottom: 0.2rem;
 }
 
-.pagina-propiedad table {
-  margin: 0 auto;
-  margin-top: 10px;
+.pagina h2 {
+  text-align: center;
+  display: inline-block;
+  color: #146c5a;
+  font-family: "Georgia", "Segoe UI", serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.6rem;
+  position: relative;
 }
 
-.pagina-propiedad td {
-  padding: 5px;
+.pagina h2::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 3px;
+  border-radius: 3px;
+  background-color: #146c5a;
 }
 
-.pagina-propiedad input, .pagina-propiedad select {
-  padding: 4px;
+/* Neutraliza bordes legacy (border="1") para el look redondeado */
+.pagina table,
+.pagina table td,
+.pagina table th {
+  border: none;
 }
 
-.pagina-propiedad button {
-  background-color: #4CAF50;
+/* Tarjetas: formularios y tablas centradas con borde redondeado */
+.pagina form > table:not(.botones),
+.pagina .resultados {
+  margin: 1rem auto;
+  background-color: #ffffff;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #cfe3dc;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(20, 108, 90, 0.12);
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+/* Tabla de botones: centrar la fila de botones */
+.pagina .botones {
+  margin: 1rem auto;
+}
+
+.pagina .botones tr {
+  float: none;
+}
+
+.pagina .botones td {
+  padding: 6px;
+}
+
+.pagina td {
+  padding: 8px 12px;
+}
+
+.pagina label {
+  color: #1f4d42;
+  font-weight: 600;
+}
+
+.pagina input,
+.pagina select,
+.pagina textarea {
+  padding: 6px 10px;
+  border: 1px solid #bcd6cd;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagina input:focus,
+.pagina select:focus,
+.pagina textarea:focus {
+  outline: none;
+  border-color: #146c5a;
+  box-shadow: 0 0 0 3px rgba(20, 108, 90, 0.15);
+}
+
+.pagina button,
+.pagina .botones input[type="submit"] {
+  background: #146c5a;
+  background-color: #146c5a;
   color: white;
-  padding: 6px 12px;
-  border: 1px solid gray;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-shadow: none;
   cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.pagina button:hover,
+.pagina .botones input[type="submit"]:hover {
+  background-color: #0f4c3a;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(20, 108, 90, 0.25);
+}
+
+/* Tarjeta para formularios "inline" (sin tabla), p.ej. contratos */
+.pagina .form-card {
+  max-width: 620px;
+  margin: 1rem auto;
+  background-color: #ffffff;
+  border: 1px solid #cfe3dc;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(20, 108, 90, 0.12);
+  padding: 1.5rem 1.75rem;
+  line-height: 2.4;
+  color: #1f4d42;
+}
+
+.pagina .form-card textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 70px;
+}
+
+/* Botón "nuevo" (links de alta) */
+.pagina .btn-nuevo {
+  display: inline-block;
+  background-color: #146c5a;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.pagina .btn-nuevo:hover {
+  background-color: #0f4c3a;
+  transform: translateY(-1px);
+}
+
+/* Tabla de resultados */
+.pagina .resultados {
+  width: 90%;
+  padding: 0;
+}
+
+.pagina .resultados thead th {
+  background-color: #146c5a;
+  color: #ffffff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.pagina .resultados thead th label {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pagina .resultados tbody td {
+  border-top: 1px solid #e3efea;
+}
+
+.pagina .resultados tbody tr:nth-child(even) {
+  background-color: #f4faf7;
+}
+
+.pagina .resultados tbody tr:hover {
+  background-color: #e6f4ee;
+}
+
+/* Links de acciones (editar / eliminar) dentro de las tablas */
+.pagina .btn {
+  display: inline-block;
+  background-color: #146c5a;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.pagina .btn:hover {
+  background-color: #0f4c3a;
+  transform: translateY(-1px);
 }
 
 

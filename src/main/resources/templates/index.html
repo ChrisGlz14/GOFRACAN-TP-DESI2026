@@ -6,21 +6,24 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
 <body>
-   <div class="starter-template">
-        <h1>Bienvenido al sitio de HogarYa</h1>
+    <div class="banner">
+        <h1 class="banner-titulo">Hogar Ya!</h1>
+        <p class="banner-slogan">Tu próximo alquiler te está esperando</p>
+    </div>
+
+    <div class="starter-template">
         <h2>
             <span th:text="'Elija la opción'"></span>
         </h2>
     </div>
-    
+
 
     <div class="menu">
-        <a th:href="@{/provinciasBuscar}">Provincias</a>
-        <a th:href="@{/ciudadesBuscar}">Ciudades</a>
-        <a th:href="@{/personasBuscar}">Personas</a>
-		<a th:href="@{/contratosBuscar}">Contrato</a>
-        <a th:href="@{/propiedadBuscar}">Propiedades</a>
-<a th:href="@{/publicaciones}">Publicaciones</a>
+        <a class="btn-provincias" th:href="@{/provinciasBuscar}">Provincias</a>
+        <a class="btn-ciudades" th:href="@{/ciudadesBuscar}">Ciudades</a>
+        <a class="btn-personas" th:href="@{/personasBuscar}">Personas</a>
+        <a class="btn-contratos" th:href="@{/contratosBuscar}">Contrato</a>
+        <a class="btn-propiedades" th:href="@{/propiedadBuscar}">Propiedades</a>
     </div>
 
 </body>

@@ -5,17 +5,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
-<body class="pagina-propiedad">
+<body class="pagina">
 
-    <div class="starter-template">
-        <h1>Inmobiliaria HogarYa</h1>
-        <h2>Listado de Contratos</h2>
-    </div>
+	<div class="starter-template">
+	    <h1><span th:text="#{empresa}" /></h1>
+	    <h2>Listado de Contratos</h2>
+	</div>
 
     <p th:if="${error}" th:text="${error}" class="error"></p>
 
     <form method="get" th:action="@{/contratosBuscar}">
-        <table border="0" style="align-self: center;">
+        <table border="1" style="align-self: center;">
             <tr>
                 <td><label>Inquilino</label></td>
                 <td>

@@ -6,11 +6,11 @@
     <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 
-<body class="pagina-propiedad">
-    <div class="starter-template">
-        <h1>Inmobiliaria</h1>
-        <h2 th:text="${esAlta} ? 'Registrar Contrato' : 'Editar Contrato'"></h2>
-    </div>
+<body class="pagina">
+	<div class="starter-template">
+	    <h1><span th:text="#{empresa}" /></h1>
+	    <h2 th:text="${esAlta} ? 'Registrar Contrato' : 'Editar Contrato'"></h2>
+	</div>
 
     <p th:if="${error}" th:text="${error}" class="error"></p>
 
@@ -18,7 +18,7 @@
 
         <input type="hidden" th:field="*{id}" />
 
-        <table border="0" style="align-self: center;">
+        <table border="1" style="align-self: center;">
             <tr th:if="${!esAlta}">
                 <td><label>ID</label></td>
                 <td><input type="text" th:value="${formBean.id}" readonly /></td>

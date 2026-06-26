@@ -27,6 +27,19 @@
                     </select>
                 </td>
             </tr>
+			
+			<tr>
+			    <td><label>Propiedad</label></td>
+			    <td>
+			        <select name="idPropiedad">
+			            <option value="">Todas</option>
+			            <option th:each="p : ${allPropiedades}" th:value="${p.id}"
+			                    th:selected="${p.id == idPropiedad}"
+			                    th:text="${p.direccion}"></option>
+			        </select>
+			    </td>
+			</tr>
+			
             <tr>
                 <td><label>Estado</label></td>
                 <td>

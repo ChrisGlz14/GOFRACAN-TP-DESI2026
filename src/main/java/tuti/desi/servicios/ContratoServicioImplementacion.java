@@ -185,13 +185,17 @@ public class ContratoServicioImplementacion implements ContratoServicio {
         repo.save(contrato);
     }
 
+    //metodo buscar contraros 
     @Override
-    public List<Contrato> buscar(Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde) {
+    public List<Contrato> buscar(Long idPropiedad, Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde) {
 
         List<Contrato> todos = repo.findByEliminadoFalse();
         List<Contrato> resultado = new ArrayList<>();
 
         for (Contrato c : todos) {
+            if (idPropiedad != null && !c.getPropiedad().getId().equals(idPropiedad)) {
+                continue;
+            }
             if (idInquilino != null && !c.getInquilino().getId().equals(idInquilino)) {
                 continue;
             }

@@ -2,7 +2,7 @@ package tuti.desi.presentacion.publicaciones;
 
 import java.util.List;
 import java.math.BigDecimal;
-import java.time.LocalDateTime; // Importamos para la fecha del historial
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import tuti.desi.entidades.Publicacion;
 import tuti.desi.entidades.EstadoPublicacion;
-import tuti.desi.entidades.HistorialEstadoPublicacion; // Importamos la entidad historial
-import tuti.desi.accesoDatos.IHistorialEstadoPublicacionRepo; // Importamos tu nuevo repositorio
+import tuti.desi.entidades.HistorialEstadoPublicacion;
+import tuti.desi.accesoDatos.IHistorialEstadoPublicacionRepo;
 import tuti.desi.servicios.PropiedadService;
 import tuti.desi.servicios.PublicacionService;
 
 @Controller
-@RequestMapping("/publicaciones")
+@RequestMapping 
 public class PublicacionesController {
 
     @Autowired
@@ -30,10 +30,10 @@ public class PublicacionesController {
     private PropiedadService propiedadService; 
 
     @Autowired
-    private IHistorialEstadoPublicacionRepo historialRepo; // Inyectamos el repo para guardar directo
+    private IHistorialEstadoPublicacionRepo historialRepo;
 
-    // 1. Pantalla principal de BUSCAR / LISTAR (HU 2.4 con Filtros Sincronizados)
-    @GetMapping
+    // 1. Pantalla principal adaptada a la URL del grupo
+    @GetMapping("/publicacionesBuscar") 
     public String listarPublicaciones(
             @RequestParam(value = "propiedadId", required = false) Long propiedadId,
             @RequestParam(value = "estado", required = false) EstadoPublicacion estado,
@@ -44,37 +44,31 @@ public class PublicacionesController {
         List<Publicacion> lista = publicacionService.buscarConFiltros(propiedadId, estado, precioMin, precioMax);
         model.addAttribute("publicaciones", lista);
         
-        // Combos para los filtros de la pantalla principal
         model.addAttribute("propiedades", propiedadService.obtenerDisponibles());
         model.addAttribute("estados", EstadoPublicacion.values()); 
         
-        return "publicacion/publicacionesBuscar";
+        return "publicacion/publicacionesBuscar"; // Devuelve html
     }
 
-    // 2. Pantalla de NUEVA PUBLICACIÓN (HU 2.1)
-    @GetMapping("/nueva")
+    // 2. Pantalla de NUEVA PUBLICACIÓN 
+    @GetMapping("/publicaciones/nueva") 
     public String mostrarFormularioNueva(Model model) {
         model.addAttribute("publicacion", new Publicacion()); 
-        
-        // Cargamos las propiedades reales para el combo
         model.addAttribute("propiedadesDisponibles", propiedadService.obtenerDisponibles()); 
         return "publicacion/publicacionEditar";
     }
 
-    // 3. Pantalla de EDITAR (HU 2.3 - Recuperación por Parámetro de ID)
-    @GetMapping("/editar")
+    // 3. Pantalla de EDITAR 
+    @GetMapping("/publicaciones/editar")
     public String mostrarFormularioEditar(@RequestParam("id") Long id, Model model) {
-        // Buscamos la publicación real en la base de datos por su ID
         Publicacion publicacionExistente = publicacionService.buscarPorId(id);
-        
-        // Se la pasamos al modelo para que el HTML dibuje los datos cargados
         model.addAttribute("publicacion", publicacionExistente); 
         model.addAttribute("propiedadesDisponibles", propiedadService.obtenerDisponibles());
         return "publicacion/publicacionEditar";
     }
 
-    // 4. Procesar el botón GUARDAR PUBLICACIÓN (Blindado con Inteligencia de Edición y Cátedra)
-    @PostMapping("/guardar")
+    // 4. Procesar el botón GUARDAR PUBLICACIÓN
+    @PostMapping("/publicaciones/guardar")
     public String guardarPublicacion(
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "precioMensual", required = false) Double precioMensual, 
@@ -84,7 +78,6 @@ public class PublicacionesController {
             @RequestParam(value = "propiedadIdForm", required = false) Long propiedadIdForm, 
             Model model) {
         
-        // Salvavidas por si viaja vacío el id de propiedad
         if (propiedadIdForm == null) {
             propiedadIdForm = 1L;
         }
@@ -93,7 +86,6 @@ public class PublicacionesController {
         boolean registrarHistorial = false;
         EstadoPublicacion estadoNuevo = null;
 
-        // ESTRATEGIA DE ANALISTA: Si el ID existe, recuperamos el registro histórico de la base de datos
         if (id != null) {
             publicacion = publicacionService.buscarPorId(id);
             if (publicacion == null) {
@@ -101,40 +93,34 @@ public class PublicacionesController {
                 publicacion.setId(id);
                 publicacion.setFechaPublicacion(java.time.LocalDate.now());
             } else {
-                // 🚀 INTERCEPCIÓN DEL HISTORIAL: Verificamos el cambio ANTES de pisar el objeto
                 if (estadoForm != null && !estadoForm.isEmpty()) {
                     estadoNuevo = EstadoPublicacion.valueOf(estadoForm);
-                    // Si el estado que tiene en la BD es diferente al que viene de la pantalla...
                     if (!publicacion.getEstado().equals(estadoNuevo)) {
-                        registrarHistorial = true; // Dejamos la bandera en true para grabar después
+                        registrarHistorial = true; 
                     }
                 }
             }
         } else {
-            // Si el ID es null, es un ALTA real: creamos objeto en blanco y asignamos fecha de hoy
             publicacion = new Publicacion();
             publicacion.setFechaPublicacion(java.time.LocalDate.now());
         }
         
-        // CÁTEDRA: Convertimos el Double del formulario a BigDecimal para la entidad
         if (precioMensual != null) {
             publicacion.setPrecioMensual(BigDecimal.valueOf(precioMensual));
         } else if (publicacion.getPrecioMensual() == null) {
             publicacion.setPrecioMensual(BigDecimal.ZERO);
         }
         
-        publicacion.setCondiciones(condiciones != null ? condiciones : "");
+        publicacion.setCondiciones(condiciones != null ? condiciones : "");        publicacion.setCondiciones(condiciones != null ? condiciones : "");
         publicacion.setDescripcion(descripcion != null ? descripcion : "");
         publicacion.setEliminada(false);
         
-        // Mapeo del Estado del combo dinámico del HTML al objeto
         if (estadoForm != null && !estadoForm.isEmpty()) {
             publicacion.setEstado(EstadoPublicacion.valueOf(estadoForm));
         } else if (publicacion.getEstado() == null) {
-            publicacion.setEstado(EstadoPublicacion.ACTIVA); // Por defecto en el Alta
+            publicacion.setEstado(EstadoPublicacion.ACTIVA);
         }
 
-        // Buscamos la Propiedad real en la base de datos gofracan
         tuti.desi.entidades.Propiedad propReal = propiedadService.buscarPorId(propiedadIdForm);
         if (propReal == null) {
             propReal = new tuti.desi.entidades.Propiedad();
@@ -142,7 +128,6 @@ public class PublicacionesController {
         }
         publicacion.setPropiedad(propReal);
 
-        // Regla de Negocio: No duplicar publicaciones activas
         if (EstadoPublicacion.ACTIVA.equals(publicacion.getEstado())) {
             boolean yaExisteActiva = false;
             try {
@@ -151,33 +136,30 @@ public class PublicacionesController {
                 yaExisteActiva = false; 
             }
             
-            // Bloqueamos solo si es un ALTA real. Si es edición del mismo registro, permitimos guardar.
             if (yaExisteActiva && (id == null)) {
                 model.addAttribute("error", "Ya existe una publicación ACTIVA para esta propiedad. Debe pausarla o finalizarla primero.");
                 model.addAttribute("propiedadesDisponibles", propiedadService.obtenerDisponibles());
                 model.addAttribute("publicacion", publicacion);
-                return "publicacionEditar";
+                return "publicacion/publicacionEditar";
             }
         }
 
-        // Guardado final de la publicación en la base de datos
         publicacionService.guardar(publicacion);
 
-        // 🚀 OBLIGAMOS A MYSQL A CREAR EL REGISTRO DEL HISTORIAL
         if (registrarHistorial) {
             HistorialEstadoPublicacion historial = new HistorialEstadoPublicacion();
             historial.setPublicacion(publicacion);
-            historial.setEstado(estadoNuevo); // El estado nuevo pedido por el diagrama
-            historial.setFechaHora(LocalDateTime.now()); // Columna fecha_hora
+            historial.setEstado(estadoNuevo);
+            historial.setFechaHora(LocalDateTime.now());
             
-            historialRepo.save(historial); // El insert directo infalible
+            historialRepo.save(historial);
         }
         
-        return "redirect:/publicaciones"; 
+        return "redirect:/publicacionesBuscar"; //  redirige de vuelta a la lista simétrica
     }
 
-    // 5. Procesar la ELIMINACIÓN LÓGICA (HU 2.2)
-    @GetMapping("/eliminar/{id}")
+    // 5. Procesar la ELIMINACIÓN LÓGICA 
+    @GetMapping("/publicaciones/eliminar/{id}")
     public String eliminarPublicacion(@PathVariable("id") Long id, Model model) {
         Publicacion publicacion = publicacionService.buscarPorId(id);
         
@@ -190,6 +172,5 @@ public class PublicacionesController {
             publicacionService.eliminarLogicamente(id);
         }
         
-        return "redirect:/publicaciones"; 
-    }
-}
+        return "redirect:/publicacionesBuscar"; 
+}}

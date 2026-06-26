@@ -2,7 +2,6 @@ package tuti.desi.entidades;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -17,7 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "publicacion") // CORREGIDO: En singular para que coincida con la base 'gofracan'
+@Table(name = "publicacion")
 public class Publicacion {
 
     @Id 
@@ -48,7 +47,7 @@ public class Publicacion {
     @jakarta.persistence.OneToMany(mappedBy = "publicacion", cascade = jakarta.persistence.CascadeType.ALL)
     private java.util.List<HistorialEstadoPublicacion> historialEstados = new java.util.ArrayList<>();
 
-    // El Getter que te estaba pidiendo el servicio a gritos:
+    // Getter que pide el Servicio
     public java.util.List<HistorialEstadoPublicacion> getHistorialEstados() { 
         return historialEstados; 
     }
@@ -64,7 +63,7 @@ public class Publicacion {
     
     public BigDecimal getPrecioMensual() { return precioMensual; }
     
-    // CORREGIDO: Sintaxis limpia para la asignación del BigDecimal
+    // Sintaxis limpia para la asignación del BigDecimal
     public void setPrecioMensual(BigDecimal precioMensual) { 
         this.precioMensual = precioMensual; 
     }

@@ -13,8 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collections;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +22,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import tuti.desi.entidades.EstadoFactura;
 import tuti.desi.entidades.Factura;
 import tuti.desi.excepciones.Excepcion;
 import tuti.desi.servicios.FacturaService;

@@ -3,6 +3,7 @@ package tuti.desi.excepciones;
 public class Excepcion extends Exception{
 
 	
+	private static final long serialVersionUID = 1L;
 	/*
 	 * Atributo al que está asociado el error
 	 */

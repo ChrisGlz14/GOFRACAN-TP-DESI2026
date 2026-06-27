@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,6 @@ import tuti.desi.entidades.HistorialEstadoFactura;
 import tuti.desi.entidades.MedioPago;
 import tuti.desi.excepciones.EntidadNoEncontradaException;
 import tuti.desi.excepciones.Excepcion;
-
-import java.util.Optional;
 
 /**
  * Tests unitarios para FacturaServiceImpl.

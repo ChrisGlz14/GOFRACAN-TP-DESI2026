@@ -43,7 +43,7 @@ public class ProvinciaRegistrarEditarController {
 			//Estoy por crear una provincia nueva
 			modelo.addAttribute("formBean",new Provincia());
 		}
-       return "provinciaEditar";
+       return "provincia/provinciaEditar";
     }
      
     @ModelAttribute("allProvincias")
@@ -68,7 +68,7 @@ public class ProvinciaRegistrarEditarController {
     		if(result.hasErrors())
     		{
     			modelo.addAttribute("formBean",formBean);
-    			 return "provinciaEditar";
+    			 return "provincia/provinciaEditar";
     		}
     		else
     		{
@@ -89,7 +89,7 @@ public class ProvinciaRegistrarEditarController {
 
 					}
 		            modelo.addAttribute("formBean",formBean);
-	    			return "provinciaEditar";  //Como existe un error me quedo en la misma pantalla
+	    			return "provincia/provinciaEditar";  //Como existe un error me quedo en la misma pantalla
 				}
     		}
     	}

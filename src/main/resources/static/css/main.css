@@ -1,4 +1,4 @@
-@charset "ISO-8859-1";
+
 body {
   padding-top: 5rem;
 }
@@ -22,12 +22,6 @@ h2{
 }
 
 
-.resultados th {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.resultados tr:nth-child(even) {background-color: #f2f2f2;}
 
 .resultados table{
   width: 100%;
@@ -93,6 +87,37 @@ float: left;
 .menu a:hover {
   background-color: #0056b3;
   transform: scale(1.02);
+}
+
+
+/* estilos de las pantallas de propiedad */
+.pagina-propiedad {
+  background-color: #eaf4ff;
+}
+
+.pagina-propiedad h2 {
+  text-align: center;
+}
+
+.pagina-propiedad table {
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
+.pagina-propiedad td {
+  padding: 5px;
+}
+
+.pagina-propiedad input, .pagina-propiedad select {
+  padding: 4px;
+}
+
+.pagina-propiedad button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border: 1px solid gray;
+  cursor: pointer;
 }
 
 

@@ -24,7 +24,7 @@ public class CalculadoraController {
     @RequestMapping(method=RequestMethod.GET)
     public String preparaForm(Model modelo) {
     	modelo.addAttribute("formBean",new CalculadoraModel());
-       return "calculadora";
+       return "calculadora/calculadora";
     }
      
     
@@ -51,7 +51,7 @@ public class CalculadoraController {
 //        }
         formBean.setResultado(servicio.calcular(action, n1,n2));
     		
-    	return "calculadora";
+    	return "calculadora/calculadora";
     	
     	
     }

@@ -12,7 +12,7 @@ public interface PublicacionService {
     
     void eliminarLogicamente(Long id);
     
-    // Sincronizado: ahora devuelve Publicacion y el parámetro se llama publicacionForm
+    // devuelve Publicacion y el parámetro se llama publicacionForm
     Publicacion guardar(Publicacion publicacionForm);
     
     Publicacion buscarPorId(Long id);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import tuti.desi.entidades.EstadoContrato;
 import tuti.desi.servicios.ContratoServicio;
 import tuti.desi.servicios.PersonaService;
+import tuti.desi.servicios.PropiedadService;
 
 @Controller
 @RequestMapping("/contratosBuscar")
@@ -22,21 +23,26 @@ public class ContratoBuscarController {
 
     @Autowired
     private PersonaService personaService;
+    
+    @Autowired 
+    private PropiedadService propiedadService;
 
     @GetMapping
     public String buscar(Model model,
+    		@RequestParam(required = false) Long idPropiedad,
             @RequestParam(required = false) Long idInquilino,
             @RequestParam(required = false) EstadoContrato estado,
             @RequestParam(required = false) LocalDate fechaInicioDesde) {
 
-        model.addAttribute("contratos", service.buscar(idInquilino, estado, fechaInicioDesde));
+        model.addAttribute("contratos", service.buscar(idPropiedad, idInquilino, estado, fechaInicioDesde));
         model.addAttribute("allPersonas", personaService.getAll());
+        model.addAttribute("allPropiedades", propiedadService.obtenerTodas());
         model.addAttribute("allEstados", EstadoContrato.values());
         model.addAttribute("idInquilino", idInquilino);
         model.addAttribute("estado", estado);
         model.addAttribute("fechaInicioDesde", fechaInicioDesde);
 
-        return "contratosBuscar";
+        return "contrato/contratosBuscar";
     }
 }
 

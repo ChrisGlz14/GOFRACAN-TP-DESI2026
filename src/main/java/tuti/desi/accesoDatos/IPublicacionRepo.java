@@ -16,7 +16,7 @@ public interface IPublicacionRepo extends JpaRepository<Publicacion, Long> {
 
     List<Publicacion> findByEliminadaFalse();
 
-    // El filtro de la HU 2.4 adaptado 100% a las variables reales de tu modelo
+    // El filtro de las variables reales de la HU
     @Query("SELECT p FROM Publicacion p WHERE p.eliminada = false " +
            "AND (:propiedadId IS NULL OR p.propiedad.id = :propiedadId) " +
            "AND (:estado IS NULL OR p.estado = :estado) " +

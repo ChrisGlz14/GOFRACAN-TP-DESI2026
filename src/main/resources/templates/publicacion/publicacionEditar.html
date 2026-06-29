@@ -1,72 +1,85 @@
-HTML
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Publicación</title>
+    <title>Editar Publicación</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+<body class="pagina">
 
-    <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        
-        <h2 style="color: #333; margin-bottom: 20px;" 
-            th:text="${publicacion.id != null} ? '📝 Editar Publicación de Alquiler' : '📝 Registrar Publicación de Alquiler'">
-            📝 Registrar Publicación de Alquiler
+    <div class="starter-template">
+        <h1>Hogar Ya</h1>
+        <h2>
+            <span th:text="${publicacion.id != null} ? 'Editar Publicación' : 'Registrar Publicación'">Editar Publicación</span>
         </h2>
+    </div>
+
+    <div class="contenedor-formulario" style="max-width: 600px; margin: 0 auto;">
         
         <form th:action="@{/publicaciones/guardar}" method="post">
             
             <input type="hidden" name="id" th:value="${publicacion != null} ? ${publicacion.id} : ''" />
 
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Seleccionar Propiedad:</label>
-                <select name="propiedadIdForm" class="form-control" style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" th:disabled="${publicacion.id != null}">										
-                    <option th:each="p : ${propiedadesDisponibles}" 
-                            th:value="${p.id}" 
-                            th:text="${p.direccion}"
-                            th:selected="${publicacion.propiedad != null and p.id == publicacion.propiedad.id}">
-                    </option>
-                </select>
-                <input type="hidden" name="propiedadIdForm" th:if="${publicacion.id != null}" th:value="${publicacion.propiedad.id}" />
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Precio Mensual ($):</label>
-                <input type="number" name="precioMensual" step="0.01" required 
-                       th:value="${publicacion != null} ? ${publicacion.precioMensual} : ''"
-                       style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" />
-            </div>
+            <table class="tabla-datos" style="width: 100%; border: none;">
+                <tr>
+                    <td><label>Seleccionar Propiedad:</label></td>
+                    <td>
+                        <select name="propiedadIdForm" th:disabled="${publicacion.id != null}">										
+                            <option th:each="p : ${propiedadesDisponibles}" 
+                                    th:value="${p.id}" 
+                                    th:text="${p.direccion}"
+                                    th:selected="${publicacion.propiedad != null and p.id == publicacion.propiedad.id}">
+                            </option>
+                        </select>
+                        <input type="hidden" name="propiedadIdForm" th:if="${publicacion.id != null}" th:value="${publicacion.propiedad.id}" />
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td><label>Precio Mensual ($):</label></td>
+                    <td>
+                        <input type="number" name="precioMensual" step="0.01" required 
+                               th:value="${publicacion != null} ? ${publicacion.precioMensual} : ''" />
+                    </td>
+                </tr>
 
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Condiciones del Alquiler:</label>
-                <input type="text" name="condiciones" placeholder="Ej: Garantía propietaria, no acepta mascotas" 
-                       th:value="${publicacion != null} ? ${publicacion.condiciones} : ''"
-                       style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;" />
-            </div>
+                <tr>
+                    <td><label>Condiciones:</label></td>
+                    <td>
+                        <input type="text" name="condiciones" placeholder="Ej: Garantía propietaria" 
+                               th:value="${publicacion != null} ? ${publicacion.condiciones} : ''" />
+                    </td>
+                </tr>
 
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Descripción de la Publicación:</label>
-                <textarea name="descripcion" rows="4" placeholder="Detalles de la propiedad..." 
-                          th:text="${publicacion != null} ? ${publicacion.descripcion} : ''"
-                          style="width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc;"></textarea>
-            </div>
+                <tr>
+                    <td><label>Descripción:</label></td>
+                    <td>
+                        <textarea name="descripcion" rows="4" placeholder="Detalles de la propiedad..." 
+                                  th:text="${publicacion != null} ? ${publicacion.descripcion} : ''"></textarea>
+                    </td>
+                </tr>
 
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label for="estado" style="display: block; font-weight: bold; margin-bottom: 5px;">Estado de la Publicación:</label>
-                <select name="estadoForm" id="estado" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                    <option value="ACTIVA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'ACTIVA'}">Activa</option>
-                    <option value="PAUSADA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'PAUSADA'}">Pausada</option>
-                    <option value="FINALIZADA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'FINALIZADA'}">Finalizada</option>
-                </select>
-            </div>
+                <tr>
+                    <td><label for="estado">Estado:</label></td>
+                    <td>
+                        <select name="estadoForm" id="estado">
+                            <option value="ACTIVA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'ACTIVA'}">Activa</option>
+                            <option value="PAUSADA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'PAUSADA'}">Pausada</option>
+                            <option value="FINALIZADA" th:selected="${publicacion.estado != null and publicacion.estado.name() == 'FINALIZADA'}">Finalizada</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
 
-            <div style="margin-top: 25px;">
-                <button type="submit" style="background-color: #2e7d32; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                    💾 Guardar Publicación
+            <div style="text-align: center; margin-top: 25px; display: flex; justify-content: center; gap: 15px;">
+                <button type="submit" class="btn btn-primary" style="background-color: #005944; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                    Aceptar
                 </button>
                 
-                <a th:href="@{/publicaciones}" style="background-color: #757575; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-left: 10px; display: inline-block;">
-                    ❌ Cancelar
+                <a th:href="@{/publicacionesBuscar}" style="text-decoration: none;">
+                    <button type="button" class="btn btn-secondary" style="background-color: #005944; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        Cancelar
+                    </button>
                 </a>
             </div>
             

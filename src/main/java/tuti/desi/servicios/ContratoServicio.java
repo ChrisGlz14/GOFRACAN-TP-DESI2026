@@ -18,6 +18,8 @@ public interface ContratoServicio {
     Contrato getById(Long id);  //busca por id  
    
     List<Contrato> getAll(); //obtiene todos los contratos
-    List<Contrato> buscar(Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde);
+   //Buscar los contrato por prop, inqui, estado o fecha
+    List<Contrato> buscar(Long idPropiedad, Long idInquilino, EstadoContrato estado, LocalDate fechaInicioDesde);
+    boolean tieneContratoActivo(Long idPropiedad);
 
 }

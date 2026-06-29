@@ -20,32 +20,32 @@ public class PublicacionServiceImpl implements PublicacionService {
     private IPublicacionRepo publicacionRepo; 
     
     @Autowired
-    private IHistorialEstadoPublicacionRepo historialRepo; // Inyectamos el repositorio del historial
+    private IHistorialEstadoPublicacionRepo historialRepo; // Inyecto el repositorio del historial
 
     @Override
     public List<Publicacion> buscarConFiltros(Long propiedadId, EstadoPublicacion estado, Double precioMin, Double precioMax) {
-        // Transformamos los Double que vienen de la pantalla a BigDecimal manejando los nulls
+        // Transformo los Double que vienen de la pantalla a BigDecimal con los nulls
         BigDecimal min = (precioMin != null) ? BigDecimal.valueOf(precioMin) : null;
         BigDecimal max = (precioMax != null) ? BigDecimal.valueOf(precioMax) : null;
         
-        // Enviamos al repositorio
+        // va al repositorio
         return publicacionRepo.buscarConFiltros(propiedadId, estado, min, max);
     }
 
    
     public Publicacion guardar(Publicacion publicacionForm) {
         
-        // 1. CRITERIO DE ACEPTACIÓN: El precio mensual deberá seguir siendo un número positivo
+        // CRITERIO DE ACEPTACIÓN: El precio mensual deberá seguir siendo un número positivo
         if (publicacionForm.getPrecioMensual() == null || publicacionForm.getPrecioMensual().compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("El precio mensual debe ser un número positivo.");
         }
 
-        // 2. Control si es una EDICIÓN (el ID ya existe en la base de datos)
+        // Control si es una EDICIÓN (el ID ya existe en la base de datos)
         if (publicacionForm.getId() != null) {
             Optional<Publicacion> publicacionAnteriorOpt = publicacionRepo.findById(publicacionForm.getId());
             
             if (publicacionAnteriorOpt.isPresent()) {
-                Publicacion publicBd = publicacionAnteriorOpt.get(); // <--- ¡ACÁ SE CREA LA VARIABLE QUE FALTABA!
+                Publicacion publicBd = publicacionAnteriorOpt.get(); //ACÁ SE CREA LA VARIABLE QUE FALTA
                 
                 // CRITERIO DE ACEPTACIÓN: Las condiciones de alquiler podrán modificarse mientras la publicación no esté finalizada
                 if (publicBd.getEstado() == EstadoPublicacion.FINALIZADA && !publicBd.getCondiciones().equals(publicacionForm.getCondiciones())) {
@@ -61,14 +61,14 @@ public class PublicacionServiceImpl implements PublicacionService {
                     }
                 }
 
-                // CRITERIO DE ACEPTACIÓN: Mantener el registro de cambios si el estado se editara (SIGUIENDO EL DIAGRAMA)
+                // CRITERIO DE ACEPTACIÓN: Mantener el registro de cambios si el estado se editara 
                 if (!publicBd.getEstado().equals(publicacionForm.getEstado())) {
                     HistorialEstadoPublicacion historial = new HistorialEstadoPublicacion();
                     historial.setPublicacion(publicBd);
                     historial.setEstado(publicacionForm.getEstado()); // El nuevo estado
                     historial.setFechaHora(java.time.LocalDateTime.now()); // Fecha y hora actual
                     
-                    // Guardamos directo con tu repositorio para asegurar el INSERT
+                    // Guarda directo con el repositorio 
                     historialRepo.save(historial);
                     
                     if (publicBd.getHistorialEstados() != null) {
@@ -76,7 +76,7 @@ public class PublicacionServiceImpl implements PublicacionService {
                     }
                 }
                 
-                // Seteamos los cambios autorizados del formulario al objeto persistente de la BD
+                // Setea los cambios autorizados del formulario al objeto persistente de la BD
                 publicBd.setPrecioMensual(publicacionForm.getPrecioMensual());
                 publicBd.setCondiciones(publicacionForm.getCondiciones());
                 publicBd.setDescripcion(publicacionForm.getDescripcion());
@@ -86,7 +86,7 @@ public class PublicacionServiceImpl implements PublicacionService {
                 return publicacionRepo.save(publicBd);
             }
         } else {
-            // 3. Control si es una PUBLICACIÓN NUEVA (ALTA de publicación)
+            // Control si es una PUBLICACIÓN NUEVA (ALTA de publicación)
             if (publicacionForm.getEstado() == EstadoPublicacion.ACTIVA) {
                 boolean existeActiva = publicacionRepo.existsByPropiedadIdAndEstadoAndEliminadaFalse(publicacionForm.getPropiedad().getId(), EstadoPublicacion.ACTIVA);
                 if (existeActiva) {
@@ -105,7 +105,7 @@ public class PublicacionServiceImpl implements PublicacionService {
 
     @Override
     public boolean existePublicacionActivaParaPropiedad(Long id) {
-        // CORREGIDO: Pasamos EstadoPublicacion.ACTIVA en lugar del String "ACTIVA"
+        // Pasa de  EstadoPublicacion.ACTIVA en lugar del String "ACTIVA"
         return publicacionRepo.existsByPropiedadIdAndEstadoAndEliminadaFalse(id, EstadoPublicacion.ACTIVA);
     } 
 
